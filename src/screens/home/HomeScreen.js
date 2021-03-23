@@ -11,17 +11,21 @@ function HomeScreen({ navigation }) {
         <View style={{flex: 1}}>
             <Image
                 source={background}
-                style={styles.background_img}
-            />
+                style={[styles.background_img, styles.justify_center]}
+            >
+                <Text h1 style={{color: "white"}}>
+                    Attendance App
+                </Text>
+            </Image>
             <View style={styles.row}>
                 <View
                     style={[styles.box_shadow, styles.greenBg]}
                 >
                     <TouchableOpacity
                         onPress={() => navigation.navigate('Scan')}
-                        style={styles.flex_center}
+                        style={styles.flex_left}
                     >
-                        <Icon name="ios-scan-sharp" size={50} color="white" />
+                        <Icon name="scan" size={50} color="white" />
                         <Text h4 style={{color: "white"}}>
                             Scan
                         </Text>
@@ -33,7 +37,7 @@ function HomeScreen({ navigation }) {
                 >
                     <TouchableOpacity
                         onPress={() => navigation.navigate('Scan')}
-                        style={styles.flex_center}
+                        style={styles.flex_left}
                     >
                         <Icon name="ios-qr-code-outline" size={50} color="white" />
                         <Text h4 style={{color: "white"}}>
@@ -49,7 +53,7 @@ function HomeScreen({ navigation }) {
                 >
                     <TouchableOpacity
                         onPress={() => navigation.navigate('Scan')}
-                        style={styles.flex_center}
+                        style={styles.flex_left}
                     >
                         <FontAwesome5 name="history" size={50} color="white" />
                         <Text h4 style={{color: "white"}}>
@@ -62,7 +66,7 @@ function HomeScreen({ navigation }) {
                 >
                     <TouchableOpacity
                         onPress={() => navigation.navigate('Scan')}
-                        style={styles.flex_center}
+                        style={styles.flex_left}
                     >
                         <Icon name="people" size={50} color="white" />
                         <Text h4 style={{color: "white"}}>
@@ -82,10 +86,13 @@ const styles = StyleSheet.create({
         flexDirection: 'row', 
         justifyContent: 'center'
     },
-    flex_center: {
+    flex_left: {
         flex: 1, 
         justifyContent: 'space-around', 
         alignItems: 'flex-start',
+    },
+    justify_center: {
+        justifyContent: "center"
     },
     box_shadow: {
         width: '45%', 
@@ -105,8 +112,9 @@ const styles = StyleSheet.create({
     },
     background_img: {
         width: '100%', 
-        height: 140, 
-        marginBottom: 10
+        height: 120, 
+        marginBottom: 10,
+        padding: 15
     },
     redBg: {
         backgroundColor: "#f3425f"
