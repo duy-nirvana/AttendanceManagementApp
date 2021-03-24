@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Image, Text, Avatar, Input } from 'react-native-elements';
+import { Image, Text, Avatar, Input, Button } from 'react-native-elements';
 
 const background = require('../../assets/img/bg.png');
 const avatar = require('../../assets/img/alien.png')
@@ -30,7 +30,7 @@ function SettingsScreen({ navigation }) {
 
           <Input
             disabled
-            label="Name"
+            label="Tên"
             value='Trần Khánh Duy'
             containerStyle={{
               marginTop: 5
@@ -71,6 +71,27 @@ function SettingsScreen({ navigation }) {
             labelStyle={{
               color: "black"
             }}
+          />
+          <Button
+            title="ĐỔI MẬT KHẨU"
+            titleStyle={{
+              fontSize: 20,
+            }}
+            buttonStyle={[{
+              marginTop: 10,
+              padding: 20
+            }, styles.yellowBg ]}
+          />
+          <Button
+            title="ĐĂNG XUẤT"
+            titleStyle={{
+              fontSize: 20,
+            }}
+            buttonStyle={[{
+              marginTop: 10,
+              marginBottom: 30,
+              padding: 20
+            }, styles.redBg]}
           />
         </ScrollView>
       </View>
@@ -118,12 +139,6 @@ const styles = StyleSheet.create({
     },
     redBg: {
         backgroundColor: "#f3425f"
-    },
-    blueBg: {
-        backgroundColor: "#1878f3"
-    },
-    greenBg: {
-        backgroundColor: "#45bd63"
     },
     yellowBg: {
         backgroundColor: "#f7b928"

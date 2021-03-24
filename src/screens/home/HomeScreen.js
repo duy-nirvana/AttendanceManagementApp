@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     },
     yellowBg: {
         backgroundColor: "#f7b928"
-    }
+    },
 })
 
 export default HomeScreen;
