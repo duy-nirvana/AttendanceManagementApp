@@ -1,6 +1,8 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import HomeScreen from '../screens/home/HomeScreen';
+import SettingsScreen from '../screens/settings/SettingsScreen';
 import { HomeStackNavigator, SettingsStackNavigator } from './StackNavigator';
 
 const Tab = createBottomTabNavigator();
@@ -28,8 +30,9 @@ function TabNavigator() {
             activeTintColor: 'navy',
             inactiveTintColor: 'gray',
         }}>
-        <Tab.Screen name="Home" component={HomeStackNavigator} />
-        <Tab.Screen name="Settings" component={SettingsStackNavigator} />
+        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Settings" component={SettingsScreen} />
+        
     </Tab.Navigator>
   );
 }

@@ -4,16 +4,8 @@ import { Button, CheckBox } from 'react-native-elements';
 
 function ScanScreen({ navigation }) {
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',backgroundColor: "tomato" }}>
             <Text>Scan screen hehehhe</Text>
-            <Button
-                title="Go to Details"
-                onPress={() => navigation.navigate('Details')}
-            />
-            <CheckBox
-                title='Click Here'
-                checked={true}
-            />
         </View>
     );
 }
