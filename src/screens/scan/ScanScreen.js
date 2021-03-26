@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, useState } from 'react';
 import { AppRegistry, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 
@@ -15,55 +15,48 @@ const PendingView = () => (
   </View>
 );
 
-class ScanScreen extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {hasScanned: false};
-  }
-  render() {
+const ScanScreen = () => {
+  const [hasScan, setScan] = useState(false);
   
-    return (
-      <View style={styles.container}>
-        <RNCamera
-          style={styles.preview}
-          type={RNCamera.Constants.Type.back}
-          flashMode={RNCamera.Constants.FlashMode.on}
-          androidCameraPermissionOptions={{
-            title: 'Permission to use camera',
-            message: 'We need your permission to use your camera',
-            buttonPositive: 'Ok',
-            buttonNegative: 'Cancel',
-          }}
-          onBarCodeRead={this.state.hasScanned ? undefined : (e) => this.handleBarCodeScanned(e)}
-          barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
-        >
-          {({ camera, status }) => {
-            if (status !== 'READY') return <PendingView />;
-            return (
-              <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
-                <TouchableOpacity onPress={() => this.scanAgain(camera)} style={styles.capture}>
-                  <Text style={{ fontSize: 14 }}> Scan Again </Text>
-                </TouchableOpacity>
-              </View>
-            );
-          }}
-        </RNCamera>
-      </View>
-    );
+  const scanAgain = (camera) => {
+    const options = { quality: 0.5, base64: true };
+    //  eslint-disable-next-line
+    setScan(false);
   }
 
-  scanAgain = function(camera) {
-    // const options = { quality: 0.5, base64: true };
-    // const data = await camera.takePictureAsync(options);
-    // //  eslint-disable-next-line
-    // console.log(data.uri);
-    this.setState({hasScanned: false});
-  };
-
-  handleBarCodeScanned = (e) => {
-    console.log('press', e.data)
-    this.setState({hasScanned: true});
+  const handleBarCodeScanned = (e) => {
+    console.log('press', e.data);
+    setScan(true);
   }
+
+  return (
+    <View style={styles.container}>
+      <RNCamera
+        style={styles.preview}
+        type={RNCamera.Constants.Type.back}
+        flashMode={RNCamera.Constants.FlashMode.on}
+        androidCameraPermissionOptions={{
+          title: 'Permission to use camera',
+          message: 'We need your permission to use your camera',
+          buttonPositive: 'Ok',
+          buttonNegative: 'Cancel',
+        }}
+        onBarCodeRead={hasScan ? undefined : (e) => handleBarCodeScanned(e)}
+        barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
+      >
+        {({ camera, status }) => {
+          if (status !== 'READY') return <PendingView />;
+          return (
+            <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
+              <TouchableOpacity onPress={() => scanAgain(camera)} style={styles.capture}>
+                <Text style={{ fontSize: 14 }}> Scan Again </Text>
+              </TouchableOpacity>
+            </View>
+          );
+        }}
+      </RNCamera>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
