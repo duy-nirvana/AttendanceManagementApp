@@ -52,7 +52,7 @@ function HomeScreen({ navigation }) {
                     style={[styles.box_shadow, styles.redBg]}
                 >
                     <TouchableOpacity
-                        onPress={() => navigation.navigate('Scan')}
+                        onPress={() => navigation.navigate('HistoryGenerate')}
                         style={styles.flex_left}
                     >
                         <FontAwesome5 name="history" size={50} color="white" />
@@ -65,7 +65,7 @@ function HomeScreen({ navigation }) {
                     style={[styles.box_shadow, styles.blueBg]}
                 >
                     <TouchableOpacity
-                        onPress={() => navigation.navigate('Scan')}
+                        onPress={() => navigation.navigate('HistoryAttendance')}
                         style={styles.flex_left}
                     >
                         <Icon name="people" size={50} color="white" />

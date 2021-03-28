@@ -19,6 +19,8 @@
 import React from 'react';
 import {StyleSheet, Text, View, StatusBar } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
+import { HomeStackNavigator, SettingsStackNavigator } from './src/navigators/StackNavigator';
+
 
 // import Navigator from './src/navigators';
 import {Provider} from 'react-redux';
@@ -29,7 +31,10 @@ export default function App() {
 
     return (
         <Provider store={store}>
-            <LoginScreen />
+            <NavigationContainer >
+                {/* <LoginScreen /> */}
+                <HomeStackNavigator />
+            </NavigationContainer>
         </Provider>
     );
 }
