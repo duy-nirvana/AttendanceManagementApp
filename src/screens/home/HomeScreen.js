@@ -36,7 +36,7 @@ function HomeScreen({ navigation }) {
                     style={[styles.box_shadow, styles.yellowBg]}
                 >
                     <TouchableOpacity
-                        onPress={() => navigation.navigate('Details')}
+                        onPress={() => navigation.navigate('QRCodeGenerate')}
                         style={styles.flex_left}
                     >
                         <Icon name="ios-qr-code-outline" size={50} color="white" />

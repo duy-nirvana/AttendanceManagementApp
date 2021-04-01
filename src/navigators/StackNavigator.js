@@ -1,6 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
 import DetailsScreen from '../screens/detail';
+import QRCodeGenerate from '../screens/generate/QRCodeGenerate';
 import HistoryAttendance from '../screens/history/HistoryAttendance';
 import HistoryGenerate from '../screens/history/HistoryGenerate';
 import HomeScreen from '../screens/home/HomeScreen';
@@ -24,6 +25,7 @@ const HomeStackNavigator = ({}) => {
         }}
       />
       <Stack.Screen name="Details" component={DetailsScreen}/>
+      <Stack.Screen name="QRCodeGenerate" component={QRCodeGenerate} options={{ title: 'Tạo mã QR' }}/>
       <Stack.Screen name="HistoryGenerate" component={HistoryGenerate} options={{ title: 'Lịch sử tạo mã QR' }}/>
       <Stack.Screen name="HistoryAttendance" component={HistoryAttendance} options={{ title: 'Lịch sử điểm danh' }}/>
     </Stack.Navigator>
