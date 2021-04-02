@@ -61,8 +61,9 @@ function TabNavigator() {
                             },
                         })}
                         tabBarOptions={{
-                            activeTintColor: 'navy',
+                            activeTintColor: '#1878f3',
                             inactiveTintColor: 'gray',
+                            showLabel: false
                         }}>
                         <Tab.Screen name="Home" component={HomeScreen} />
                         <Tab.Screen name="Settings" component={SettingsScreen} />
