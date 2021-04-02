@@ -1,12 +1,32 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Image, Text } from 'react-native-elements';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useDispatch, useSelector } from 'react-redux';
+import userApi from '../../api/userApi';
 
 const background = require('../../assets/img/bg.png');
 
 function HomeScreen({ navigation }) {
+    const auth = useSelector(state => state.auth);
+    const [roleUser, setRoleUser] = useState('');
+    const profileUser = useSelector(state => state.profile.profile);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        const userProfile = async () => {
+            try {
+                const user = await userApi.getDetail(auth.userToken);
+                setRoleUser(user.roles);
+                dispatch({type: 'GET_PROFILE', payload: user});
+            } catch (error) {
+                console.log('Fail to get detail user', error);
+            }
+        }
+        userProfile();
+    }, [])
+
     return (
         <View style={{flex: 1}}>
             <Image
@@ -14,7 +34,7 @@ function HomeScreen({ navigation }) {
                 style={[styles.background_img, styles.justify_center]}
             >
                 <Text h1 style={{color: "white"}}>
-                    Attendance App
+                    Home
                 </Text>
             </Image>
             <View style={styles.row}>
@@ -82,7 +102,7 @@ function HomeScreen({ navigation }) {
 
 const styles = StyleSheet.create({
     row: {
-        flex: .35, 
+        flex: .30, 
         flexDirection: 'row', 
         justifyContent: 'center'
     },
@@ -112,7 +132,7 @@ const styles = StyleSheet.create({
     },
     background_img: {
         width: '100%', 
-        height: 120, 
+        height: 100, 
         marginBottom: 10,
         padding: 15
     },

@@ -1,36 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import {Image, View, Modal, ScrollView, Dimensions, StatusBar, Alert, Text, StyleSheet, LogBox} from 'react-native';
-import {TextInput, Button, Avatar} from 'react-native-paper';
+import { View, Modal, ScrollView, Dimensions, StatusBar, Alert, ImageBackground, StyleSheet, LogBox} from 'react-native';
+import {TextInput, Button, Headline, Title} from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import UpdatePassword from './components/UpdatePassword';
-import userApi from '../../api/userApi';
+import { Image, Text, Avatar } from 'react-native-elements';
+
+const background = require('../../assets/img/bg.png');
 
 const fullWidth = Dimensions.get('screen').width; //full width
 const statusBarHeight = StatusBar.currentHeight;
 
 function SettingsScreen(props) {
     const [hasOpenChangePassword, setOpenChangePassword] = useState(false);
-    const auth = useSelector(state => state.auth);
-    const [roleUser, setRoleUser] = useState('');
     const profileUser = useSelector(state => state.profile.profile);
     const dispatch = useDispatch();
-
-    useEffect(() => {
-      const userProfile = async () => {
-          try {
-              const user = await userApi.getDetail(auth.userToken);
-              setRoleUser(user.roles);
-              dispatch({type: 'GET_PROFILE', payload: user});
-          } catch (error) {
-              console.log('Fail to get detail user', error);
-          }
-      }
-      userProfile();
-  }, [])
-
-  LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
-  LogBox.ignoreAllLogs();
 
     const handleOpenChangePassword = (status) => {
         setOpenChangePassword(status);
@@ -60,29 +44,32 @@ function SettingsScreen(props) {
 
     return (
       <View style={{flex: 1}}>
-        {/* <Image
+        <Image
           source={background}
           style={[styles.background_img, styles.justify_center]}>
           <Text h1 style={{color: 'white'}}>
             Settings
           </Text>
-        </Image> */}
+        </Image>
+        
         <ScrollView style={{padding: 12}}>
-
-        <Image 
-                    style={{width: 100, height: 100, borderRadius: 50, marginBottom: 20}}
-                    source={{
-                        uri: `${profileUser?.avatar}`
-                    }}
-                />
+                <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', marginTop: 10, marginBottom: 10}}>
+                    <Avatar
+                        rounded
+                        size="xlarge"
+                        source={{
+                            uri: `${profileUser.avatar}`,
+                        }}
+                    />
+                </View>
                 <TextInput
-                    style={{width: fullWidth * .9,  backgroundColor: 'white'}}
+                    style={{  backgroundColor: 'white', marginTop: 10}}
                     label="HỌ VÀ TÊN"
                     value={profileUser.fullName}
                     editable={false}
                 />
                 <TextInput
-                    style={{width: fullWidth * .9,  backgroundColor: 'white'}}
+                    style={{  backgroundColor: 'white', marginTop: 10}}
                     label={profileUser.roles === 'user' ? "MSSV" : "MSGV"}
                     value={profileUser.codeNumber}
                     editable={false}
@@ -91,20 +78,20 @@ function SettingsScreen(props) {
                     profileUser.roles === 'user'
                     &&
                     <TextInput
-                        style={{width: fullWidth * .9,  backgroundColor: 'white'}}
+                        style={{  backgroundColor: 'white', marginTop: 10}}
                         label="LỚP"
                         value={profileUser.classroom.name}
                         editable={false}
                     />
                 }
                 <TextInput
-                    style={{width: fullWidth * .9,  backgroundColor: 'white'}}
+                    style={{  backgroundColor: 'white', marginTop: 10}}
                     label="SĐT"
                     value={profileUser.phone}
                     editable={false}
                 />
                 <TextInput
-                    style={{width: fullWidth * .9,  backgroundColor: 'white'}}
+                    style={{  backgroundColor: 'white', marginTop: 10}}
                     label="EMAIL"
                     value={profileUser.email}
                     editable={false}
@@ -120,12 +107,12 @@ function SettingsScreen(props) {
                 <Button 
                     mode="outlined" 
                     color="white" 
-                    style={[{padding: 20, marginTop: 10}, styles.redBg]}
+                    style={[{padding: 20, marginTop: 10, marginBottom: 20}, styles.redBg]}
                     onPress={verifySignOut}
                 > 
                     ĐĂNG XUẤT
                 </Button>
-          <Modal
+                <Modal
                     animationType="slide"
                     visible={hasOpenChangePassword}
                 >   
@@ -174,7 +161,7 @@ const styles = StyleSheet.create({
     },
     background_img: {
         width: '100%', 
-        height: 120, 
+        height: 100, 
         marginBottom: 10,
         padding: 15
     },
