@@ -12,7 +12,6 @@ export default function App() {
     return (
         <Provider store={store}>
             <NavigationContainer >
-                {/* <LoginScreen /> */}
                 <HomeStackNavigator />
             </NavigationContainer>
         </Provider>

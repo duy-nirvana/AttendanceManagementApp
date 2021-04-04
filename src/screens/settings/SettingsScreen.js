@@ -11,13 +11,17 @@ const background = require('../../assets/img/bg.png');
 const fullWidth = Dimensions.get('screen').width; //full width
 const statusBarHeight = StatusBar.currentHeight;
 
-function SettingsScreen(props) {
+function SettingsScreen({navigation}) {
     const [hasOpenChangePassword, setOpenChangePassword] = useState(false);
     const profileUser = useSelector(state => state.profile.profile);
     const dispatch = useDispatch();
 
     const handleOpenChangePassword = (status) => {
         setOpenChangePassword(status);
+    }
+
+    const openModal = () => {
+
     }
 
     const verifySignOut = () => {
@@ -100,7 +104,10 @@ function SettingsScreen(props) {
                     mode="outlined" 
                     color="white" 
                     style={[{padding: 20, marginTop: 10}, styles.yellowBg]}
-                    onPress={() => handleOpenChangePassword(true)}
+                    onPress={
+                        // () => handleOpenChangePassword(true)
+                        () => navigation.navigate('UpdatePassword')
+                    }
                 > 
                     ĐỔI MẬT KHẨU
                 </Button>

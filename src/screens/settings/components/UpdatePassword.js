@@ -10,7 +10,6 @@ const fullWidth = Dimensions.get('screen').width; //full width
 const statusBarHeight = StatusBar.currentHeight;
 
 const UpdatePassword = (props) => {
-    const {handleOpenChangePassword, handleSignOut} = props;
     const profileUser = useSelector(state => state.profile.profile);
 
     const [currentPassword, setCurrentPassword] = useState('');
@@ -60,15 +59,10 @@ const UpdatePassword = (props) => {
 
     return (
         <View >
-            <View style={{justifyContent: 'flex-start', alignItems: 'flex-end'}}>
-                <MaterialCommunityIcons name="close" size={40} color="#000" onPress={() => handleOpenChangePassword(false)} />
-            </View>
-
             <View
                 style={{ marginTop: statusBarHeight + 20, alignItems: "center"}}
             >
 
-                <Title style={{fontSize: 25, marginBottom: 10 }} >Thay đổi mật khẩu</Title>
                 <TextInput 
                     label="Mật Khẩu hiện tại"
                     mode="outlined"

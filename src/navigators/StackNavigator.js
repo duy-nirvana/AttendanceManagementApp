@@ -6,6 +6,7 @@ import HistoryAttendance from '../screens/history/HistoryAttendance';
 import HistoryGenerate from '../screens/history/HistoryGenerate';
 import HomeScreen from '../screens/home/HomeScreen';
 import ScanScreen from '../screens/scan/ScanScreen';
+import UpdatePassword from '../screens/settings/components/UpdatePassword';
 import SettingsScreen from '../screens/settings/SettingsScreen';
 import TabNavigator from './TabNavigator';
 
@@ -28,6 +29,10 @@ const HomeStackNavigator = ({}) => {
       <Stack.Screen name="QRCodeGenerate" component={QRCodeGenerate} options={{ title: 'Tạo mã QR' }}/>
       <Stack.Screen name="HistoryGenerate" component={HistoryGenerate} options={{ title: 'Lịch sử tạo mã QR' }}/>
       <Stack.Screen name="HistoryAttendance" component={HistoryAttendance} options={{ title: 'Lịch sử điểm danh' }}/>
+
+      {/* Modal */}
+      <Stack.Screen name="UpdatePassword" component={UpdatePassword} options={{ title: 'Thay đổi mật khẩu' }}/>
+
     </Stack.Navigator>
   );
 }
