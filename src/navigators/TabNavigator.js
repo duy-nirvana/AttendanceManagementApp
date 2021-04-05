@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import LoginScreen from '../screens/login/LoginScreen';
-import HomeScreen from '../screens/home/HomeScreen';
-import SettingsScreen from '../screens/settings/SettingsScreen';
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import React, { useEffect } from 'react';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
+import HomeScreen from '../screens/home/HomeScreen';
+import LoginScreen from '../screens/login/LoginScreen';
+import SettingsScreen from '../screens/settings/SettingsScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -15,7 +13,7 @@ function TabNavigator() {
     const dispatch = useDispatch();
     const auth = useSelector(state => state.auth);
     
-    React.useEffect(() => {
+    useEffect(() => {
         // Fetch the token from storage then navigate to our appropriate place
         const bootstrapAsync = async () => {
             let userToken;
