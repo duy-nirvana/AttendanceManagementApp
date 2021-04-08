@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {RNCamera} from 'react-native-camera';
 import {Button} from 'react-native-elements';
@@ -7,141 +7,113 @@ import {useDispatch, useSelector} from 'react-redux';
 import qrcodeApi from '../../api/qrcodeApi';
 import historyApi from '../../api/historyApi';
 
-const PendingView = () => (
-<View
-	style={{
-		flex: 1,
-		backgroundColor: 'lightgreen',
-		justifyContent: 'center',
-		alignItems: 'center',
-	}}>
-	<Text>Waiting</Text>
-</View>
-);
-
 const ScanScreen = () => {
 	const qrcodeInfo = useSelector(state => state.qrcode.qrcode);
 	const profileUser = useSelector(state => state.profile.profile);
 	const dispatch = useDispatch();
 	const userClassID = profileUser.classroom._id;
 
-	const [hasScan, setScan] = useState(false);
-	const [historyInfo, setHistoryInfo] = useState({});
+    const [hasScanned, setScanned] = useState(false);
 	const [isLoading, setLoading] = useState(false);
+    const [sessionData, setSessionData] = useState(undefined);
 
-	const handleBarCodeScanned = e => {
-		const handleScan = async () => {
-			try {
-				setLoading(true);
-				const qrcodeValue = await qrcodeApi.getById(e.data) 
-				setLoading(false);
-				dispatch({type: 'UPDATE_QRCODE', payload: qrcodeValue});
-			} catch (error) {
-				setLoading(false);
-				setScan(true);
-				alert('Mã QR Code không hợp lệ', error);
-				dispatch({type: 'DELETE_QRCODE'});
-			}
-		};
+	const handleBarCodeScanned = (e) => {
+        if (isLoading) return;
+        setLoading(true);
+        setSessionData(e.data);
+    };
 
-		handleScan();
-	};
+    useEffect(() => {
+        let needCancel = false;
+        if (isLoading && sessionData) {
+            const handleScan = async () => {
+                try {
+                    await qrcodeApi.getById(sessionData)
+                        .then(res => {
+                            if (needCancel) return;
+                            dispatch({type: 'UPDATE_QRCODE', payload: res });
+                            return;
+                        })
+                } catch (error) {
+                    if (needCancel) return;
+                    setScanned(true);
+                    alert('Mã QR Code không hợp lệ', error)
+                    dispatch({type: 'DELETE_QRCODE'})
+                } finally {
+                    if (needCancel) return;
+                    setLoading(false);
+                    setSessionData(undefined)
+                }
+            }
+            handleScan();
+        }
 
-	useEffect(() => {
-		if (qrcodeInfo) {
-		if (qrcodeInfo.isOutOfDate === false) {
-			const checkScanQRCode = () => {
-			if (qrcodeInfo.classes.includes(userClassID) === false) {
-				setLoading(false);
-				setScan(true);
-				alert(`Mã QR code này không có lớp học của bạn!!!`);
-				dispatch({type: 'DELETE_QRCODE'});
-				return;
-			} else {
-				historyApi
-				.createOne({
-					qrcode: qrcodeInfo._id,
-					user: profileUser._id,
-				})
-				.then(() => {
-					setLoading(false);
-					setScan(true);
-					alert(`Bạn đã điểm danh thành công!`);
-					dispatch({type: 'DELETE_QRCODE'});
-					return;
-				})
-				.catch(error => {
-					setLoading(false);
-					setScan(true);
-					alert(`Bạn đã điểm danh môn học này!!!`);
-					dispatch({type: 'DELETE_QRCODE'});
-					return;
-				});
-			}
-			};
+        return () => {
+            needCancel = true;
+        }
+    }, [sessionData])
 
-			checkScanQRCode();
-		} else {
-			setLoading(false);
-			setScan(true);
-			dispatch({type: 'DELETE_QRCODE'});
-			return alert(`Mã QR Code đã hết hạn! `);
-		}
-		}
-	}, [qrcodeInfo]);
+
+    useEffect(() => {
+        if (qrcodeInfo) {
+            if (qrcodeInfo.isOutOfDate === false) {
+                const checkScanQRCode = async () => {
+                    if (qrcodeInfo.classes.includes(userClassID) === false) {
+                        alert(`Mã QR code này không có lớp học của bạn!!!`);
+                        setSessionData(undefined);
+                        setScanned(true);
+                        setLoading(false);
+                        dispatch({type: 'DELETE_QRCODE'})
+                        return;
+                    } else {
+                        await historyApi.createOne({
+                            qrcode: qrcodeInfo._id,
+                            user: profileUser._id,
+                        })
+                        .then(() => {
+                            alert(`Bạn đã điểm danh thành công!`);
+                            setSessionData(undefined);
+                            setScanned(true);
+                            setLoading(false);
+                            dispatch({type: 'DELETE_QRCODE'});
+                            return;
+                        })
+                        .catch((error) => {
+                            alert(`Bạn đã điểm danh môn học này!!!`);
+                            setSessionData(undefined);
+                            setScanned(true);
+                            setLoading(false);
+                            dispatch({type: 'DELETE_QRCODE'});
+                            return;
+                        })
+                    }
+                }
+
+                checkScanQRCode();
+            } else {
+                setScanned(true);
+                alert(`Mã QR Code đã hết hạn! `);
+                dispatch({type: 'DELETE_QRCODE'})
+                return;
+            }
+        } 
+    }, [qrcodeInfo])
 
 	return (
-		// <View style={styles.container}>
-		//   <RNCamera
-		//     style={{flex: 1}}
-		//     type={RNCamera.Constants.Type.back}
-		//     androidCameraPermissionOptions={{
-		//       title: 'Permission to use camera',
-		//       message: 'We need your permission to use your camera',
-		//       buttonPositive: 'Ok',
-		//       buttonNegative: 'Cancel',
-		//     }}
-		//     onBarCodeRead={hasScan ? undefined : (e) => handleBarCodeScanned(e)}
-		//     barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
-		//   >
-		//       {/* <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start'}}>
-		//         <Button title="Scan" onPress={() => scanAgain()} style={{flex: 1}} />
-		//       </View> */}
-
-		//   </RNCamera>
-
-		//     {/* <Button title="Light" onPress={() => setFlashMode(!flashMode)}></Button> */}
-		//   <View style={{flex: 0, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start'}}>
-		//     <Button disabled title="Scan" type="clear" loading={true} loadingProps={{size: 'large', color: 'white'}} />
-		//   </View>
-
-		//     <TouchableOpacity onPress={() => scanAgain()} style={styles.capture}>
-		//       <Text style={{ fontSize: 14 }}> Scan Again </Text>
-		//     </TouchableOpacity>
-
-		//     {/* {/* <Button title="LIGHT" onPress={() => setFlashMode(!flashMode)}></Button> */}
-		//     {
-		//       hasScan &&
-		//       <View style={{ flex: 1}}>
-		//         <TouchableOpacity onPress={() => scanAgain()} style={styles.capture}>
-		//           <Text style={{ fontSize: 14 }}> Scan Again </Text>
-		//         </TouchableOpacity>
-		//       </View>
-		//     }
-
-		// </View>
+		
 		<View style={{flex: 1}}>
 			<RNCamera
 				style={[StyleSheet.absoluteFill]}
 				type={RNCamera.Constants.Type.back}
 				androidCameraPermissionOptions={{
-				title: 'Permission to use camera',
-				message: 'We need your permission to use your camera',
-				buttonPositive: 'Ok',
-				buttonNegative: 'Cancel',
+                    title: 'Permission to use camera',
+                    message: 'We need your permission to use your camera',
+                    buttonPositive: 'Ok',
+                    buttonNegative: 'Cancel',
 				}}
-				onBarCodeRead={hasScan ? undefined : e => handleBarCodeScanned(e)}
-				barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}></RNCamera>
+				onBarCodeRead={hasScanned ? undefined : (e) => handleBarCodeScanned(e)}
+				barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
+            />
 
 			<View
 				style={{
@@ -162,9 +134,9 @@ const ScanScreen = () => {
 				<View style={{flex: 1}}></View>
 				)}
 			</View>
-			{hasScan && (
+			{hasScanned && (
 				<TouchableOpacity
-				onPress={() => setScan(false)}
+				onPress={() => setScanned(false)}
 				style={{
 					flex: 1,
 					justifyContent: 'flex-end',
@@ -178,8 +150,8 @@ const ScanScreen = () => {
 					padding: 10,
 					borderRadius: 10,
 					}}>
-					{' '}
-					Scan Again{' '}
+					
+					Scan Again
 				</Text>
 				</TouchableOpacity>
 			)}
