@@ -117,22 +117,22 @@ const ScanScreen = () => {
 
 			<View
 				style={{
-				flex: 1,
-				flexDirection: 'row',
-				justifyContent: 'space-between',
-				alignItems: 'flex-start',
+                    flex: 1,
+                    flexDirection: 'row',
+                    justifyContent: 'flex-end',
+                    alignItems: 'flex-start',
 				}}>
-				{isLoading ? (
-				<Button
-					disabled
-					title="Scan"
-					type="clear"
-					loading={true}
-					loadingProps={{size: 'large', color: 'white'}}
-				/>
-				) : (
-				<View style={{flex: 1}}></View>
-				)}
+                {isLoading ? (
+                    <Button
+                        disabled
+                        title="Scan"
+                        type="clear"
+                        loading={true}
+                        loadingProps={{size: 'large', color: 'white'}}
+                    />
+                    ) : (
+                    <View style={{flex: 1}}></View>
+                )}
 			</View>
 			{hasScanned && (
 				<TouchableOpacity
@@ -145,10 +145,10 @@ const ScanScreen = () => {
 				}}>
 				<Text
 					style={{
-					fontSize: 14,
+					fontSize: 20,
 					backgroundColor: 'white',
-					padding: 10,
-					borderRadius: 10,
+					padding: 15,
+					borderRadius: 30,
 					}}>
 					
 					Scan Again
