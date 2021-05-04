@@ -51,36 +51,6 @@ function HomeScreen({ navigation }) {
                         </Text>
                     </TouchableOpacity>
                 </View>
-
-                <View
-                    style={[styles.box_shadow, styles.yellowBg]}
-                >
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate('QRCodeGenerate')}
-                        style={styles.flex_left}
-                    >
-                        <Icon name="ios-qr-code-outline" size={50} color="white" />
-                        <Text h4 style={{color: "white"}}>
-                            Generate QRCode
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-
-            <View style={styles.row}>
-                <View
-                    style={[styles.box_shadow, styles.redBg]}
-                >
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate('HistoryGenerate')}
-                        style={styles.flex_left}
-                    >
-                        <FontAwesome5 name="history" size={50} color="white" />
-                        <Text h4 style={{color: "white"}}>
-                            Generate History
-                        </Text>
-                    </TouchableOpacity>
-                </View>
                 <View
                     style={[styles.box_shadow, styles.blueBg]}
                 >
@@ -96,6 +66,37 @@ function HomeScreen({ navigation }) {
                 </View>
             </View>
 
+            {
+                roleUser === 'moderator' &&
+                <View style={styles.row}>
+                    <View
+                        style={[styles.box_shadow, styles.yellowBg]}
+                    >
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('QRCodeGenerate')}
+                            style={styles.flex_left}
+                        >
+                            <Icon name="ios-qr-code-outline" size={50} color="white" />
+                            <Text h4 style={{color: "white"}}>
+                                Generate QRCode
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View
+                        style={[styles.box_shadow, styles.redBg]}
+                    >
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('HistoryGenerate')}
+                            style={styles.flex_left}
+                        >
+                            <FontAwesome5 name="history" size={50} color="white" />
+                            <Text h4 style={{color: "white"}}>
+                                Generate History
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            }
         </View>
     );
 }

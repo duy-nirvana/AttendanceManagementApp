@@ -1,6 +1,8 @@
 # OSX
 #
 .DS_Store
+.env
+src/api/axiosClient.js
 
 # Xcode
 #
@@ -28,6 +30,7 @@ build/
 .gradle
 local.properties
 *.iml
+
 
 # node.js
 #
