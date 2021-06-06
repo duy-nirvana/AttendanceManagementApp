@@ -42,6 +42,21 @@ function HomeScreen({ navigation }) {
                     style={[styles.box_shadow, styles.greenBg]}
                 >
                     <TouchableOpacity
+                        onPress={() => navigation.navigate('FaceScan')}
+                        style={styles.flex_left}
+                    >
+                        <Icon name="scan" size={50} color="white" />
+                        <Text h4 style={{color: "white"}}>
+                            Khuon Mat
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+            <View style={styles.row}>
+                <View
+                    style={[styles.box_shadow, styles.greenBg]}
+                >
+                    <TouchableOpacity
                         onPress={() => navigation.navigate('Scan')}
                         style={styles.flex_left}
                     >
@@ -103,22 +118,22 @@ function HomeScreen({ navigation }) {
 
 const styles = StyleSheet.create({
     row: {
-        flex: .30, 
-        flexDirection: 'row', 
+        flex: .30,
+        flexDirection: 'row',
         justifyContent: 'center'
     },
     flex_left: {
-        flex: 1, 
-        justifyContent: 'space-around', 
+        flex: 1,
+        justifyContent: 'space-around',
         alignItems: 'flex-start',
     },
     justify_center: {
         justifyContent: "center"
     },
     box_shadow: {
-        width: '45%', 
+        width: '45%',
         margin: 5,
-        marginBottom: 10, 
+        marginBottom: 10,
         borderRadius: 10,
         padding: 15,
 
@@ -132,8 +147,8 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     background_img: {
-        width: '100%', 
-        height: 100, 
+        width: '100%',
+        height: 100,
         marginBottom: 10,
         padding: 15
     },

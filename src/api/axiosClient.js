@@ -2,14 +2,14 @@ import axios from 'axios';
 import queryString from 'query-string';
 
 const axiosClient = axios.create({
-    baseURL:  'http://0bae0a901a97.ngrok.io/api' || 'http://192.168.1.18:8585/api' ,
+    baseURL:  'http://7ae6a06054c1.ngrok.io/api' || 'http://192.168.1.18:8585/api' ,
     headers: {
         'content-type': "application/json"
     },
     paramsSerializer: params => queryString.stringify(params)
 });
 
-axiosClient.interceptors.request.use(async (config) => { 
+axiosClient.interceptors.request.use(async (config) => {
     // Handle token here ...
     return config;
 })
@@ -19,7 +19,7 @@ axiosClient.interceptors.response.use((response) => {
         return response.data;
     }
     return response;
-}, (error) => { 
+}, (error) => {
     // Handle errors
     throw error;
 });

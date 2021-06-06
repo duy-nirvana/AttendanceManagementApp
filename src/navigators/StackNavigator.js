@@ -5,6 +5,7 @@ import QRCodeGenerate from '../screens/generate/QRCodeGenerate';
 import HistoryAttendance from '../screens/history/HistoryAttendance';
 import HistoryGenerate from '../screens/history/HistoryGenerate';
 import HomeScreen from '../screens/home/HomeScreen';
+import FaceScanScreen from '../screens/scan/FaceScanSceen';
 import ScanScreen from '../screens/scan/ScanScreen';
 import UpdatePassword from '../screens/settings/components/UpdatePassword';
 import SettingsScreen from '../screens/settings/SettingsScreen';
@@ -17,8 +18,8 @@ const HomeStackNavigator = ({}) => {
   return (
     <Stack.Navigator initialRouteName="Home">
       <Stack.Screen name="Home" component={TabNavigator} options={{headerShown: false}}/>
-      <Stack.Screen 
-        name="Scan" component={ScanScreen} 
+      <Stack.Screen
+        name="Scan" component={ScanScreen}
         options={{
           headerTitle: false,
           headerShown: true,
@@ -32,6 +33,9 @@ const HomeStackNavigator = ({}) => {
 
       {/* Modal */}
       <Stack.Screen name="UpdatePassword" component={UpdatePassword} options={{ title: 'Thay đổi mật khẩu' }}/>
+
+      {/* Face Scan */}
+      <Stack.Screen name="FaceScan" component={FaceScanScreen} options={{ title: 'diem danh khuon mat' }}/>
 
     </Stack.Navigator>
   );

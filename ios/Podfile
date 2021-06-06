@@ -14,6 +14,10 @@ target 'AttendanceManageApp' do
 
   pod 'react-native-camera', :path => '../node_modules/react-native-camera'
 
+  pod 'react-native-image-base64', :path => '../node_modules/react-native-image-base64'
+
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
+
   target 'AttendanceManageAppTests' do
     inherit! :complete
     # Pods for testing
