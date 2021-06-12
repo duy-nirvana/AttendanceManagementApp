@@ -35,7 +35,14 @@ const HomeStackNavigator = ({}) => {
       <Stack.Screen name="UpdatePassword" component={UpdatePassword} options={{ title: 'Thay đổi mật khẩu' }}/>
 
       {/* Face Scan */}
-      <Stack.Screen name="FaceScan" component={FaceScanScreen} options={{ title: 'diem danh khuon mat' }}/>
+      <Stack.Screen
+      name="FaceScan"
+      component={FaceScanScreen}
+      options={{
+          headerTitle: false,
+          headerShown: true,
+          headerTransparent: true,
+    }}/>
 
     </Stack.Navigator>
   );
