@@ -16,6 +16,7 @@ const ScanScreen = () => {
     const [hasScanned, setScanned] = useState(false);
 	const [isLoading, setLoading] = useState(false);
     const [sessionData, setSessionData] = useState(undefined);
+    const [isFaceScan, setFaceScan] = useState(false);
 
 	const handleBarCodeScanned = (e) => {
         if (isLoading) return;
@@ -96,11 +97,11 @@ const ScanScreen = () => {
                 dispatch({type: 'DELETE_QRCODE'})
                 return;
             }
-        } 
+        }
     }, [qrcodeInfo])
 
 	return (
-		
+
 		<View style={{flex: 1}}>
 			<RNCamera
 				style={[StyleSheet.absoluteFill]}
@@ -150,7 +151,7 @@ const ScanScreen = () => {
 					padding: 15,
 					borderRadius: 30,
 					}}>
-					
+
 					Scan Again
 				</Text>
 				</TouchableOpacity>
@@ -165,15 +166,21 @@ const styles = StyleSheet.create({
 		backgroundColor: 'black',
 	},
 	preview: {
-		flex: 0,
+		flex: 1,
 		justifyContent: 'flex-end',
 		alignItems: 'center',
 	},
 	capture: {
-		backgroundColor: 'white',
-		padding: 10,
-		alignSelf: 'flex-end',
-		justifyContent: 'center',
+        position: 'absolute',
+        alignSelf: 'center',
+        bottom: '3%',
+        flex: 0,
+        backgroundColor: '#fff',
+        borderRadius: 5,
+        padding: 15,
+        paddingHorizontal: 20,
+        alignSelf: 'center',
+        margin: 20,
 	},
 });
 
