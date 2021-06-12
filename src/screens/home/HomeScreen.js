@@ -11,7 +11,6 @@ const background = require('../../assets/img/bg.png');
 function HomeScreen({ navigation }) {
     const auth = useSelector(state => state.auth);
     const [roleUser, setRoleUser] = useState('');
-    const profileUser = useSelector(state => state.profile.profile);
     const dispatch = useDispatch();
 
     useEffect(() => {
