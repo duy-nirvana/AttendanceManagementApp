@@ -7,26 +7,10 @@ import axios from 'axios';
 import { Buffer } from "buffer";
 import Face, { Enum, FaceCaptureResponse, LivenessResponse, MatchFacesResponse, MatchFacesRequest, Image as FaceImage } from '@regulaforensics/react-native-face-api-beta'
 import { Dimensions } from 'react-native';
-import { Svg, Defs, Rect, Mask, Circle } from 'react-native-svg';
-
-
+import {CircleMask} from './components/CircleMask';
 
 var image1 = new FaceImage()
 var image2 = new FaceImage()
-
-const CircleMask = () => {
-    return (
-      <Svg height="100%" width="100%">
-        <Defs>
-          <Mask id="mask" x="0" y="0" height="100%" width="100%">
-            <Rect height="100%" width="100%" fill="#fff" />
-            <Circle r="30%" cx="50%" cy="45%" fill="black"/>
-          </Mask>
-        </Defs>
-        <Rect height="100%" width="100%" fill="rgba(0, 0, 0, 0.6)" mask="url(#mask)" fill-opacity="0" />
-      </Svg>
-    );
-  };
 
 const FaceScanScreen = () => {
     const isCamera = useRef(null);
@@ -34,6 +18,7 @@ const FaceScanScreen = () => {
     const [isLoading, setLoading] = useState('nothing');
     const [takeImage, setTakeImage] = useState('');
     const [base64Avatar, setBase64Avatar] = useState('');
+    const imgAvatar = useSelector(state => state.face);
 
 
     const takePicture = async () => {
@@ -73,20 +58,22 @@ const FaceScanScreen = () => {
         }, e => { setLoading(e) })
     };
 
-    useEffect(() => {
-        const getFaceAvatar = async () => {
-            const faceImage =
-            await axios
-                .get(profileUser.avatar, { responseType: 'arraybuffer' })
-                .then(response => Buffer.from(response.data, 'binary').toString('base64'))
+    // useEffect(() => {
+    //     const getFaceAvatar = async () => {
+    //         const faceImage =
+    //         await axios
+    //             .get(profileUser.avatar, { responseType: 'arraybuffer' })
+    //             .then(response => Buffer.from(response.data, 'binary').toString('base64'))
 
-            setBase64Avatar(faceImage);
-        }
+    //         setBase64Avatar(faceImage);
+    //     }
 
-        getFaceAvatar();
-    }, [])
+    //     getFaceAvatar();
+    // }, [])
 
-    console.log({base64Avatar})
+    // console.log({base64Avatar})
+
+    console.log({imgAvatar})
 
     return (
         <View style={styles.container}>

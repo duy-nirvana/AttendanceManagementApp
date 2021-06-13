@@ -5,13 +5,26 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 import userApi from '../../api/userApi';
+import axios from 'axios';
+import {Buffer} from 'buffer';
 
 const background = require('../../assets/img/bg.png');
 
 function HomeScreen({ navigation }) {
     const auth = useSelector(state => state.auth);
     const [roleUser, setRoleUser] = useState('');
+    const [userProfile, setUserProfile] = useState({});
     const dispatch = useDispatch();
+
+
+    const getFaceAvatar = async () => {
+        const faceImage =
+        await axios
+            .get(userProfile.avatar, { responseType: 'arraybuffer' })
+            .then(response => Buffer.from(response.data, 'binary').toString('base64'))
+
+        dispatch({type: 'GET_BASE64_AVATAR', payload: faceImage});
+    }
 
     useEffect(() => {
         const userProfile = async () => {
@@ -19,10 +32,14 @@ function HomeScreen({ navigation }) {
                 const user = await userApi.getDetail(auth.userToken);
                 setRoleUser(user.roles);
                 dispatch({type: 'GET_PROFILE', payload: user});
+                await setUserProfile(user);
+                await getFaceAvatar();
             } catch (error) {
                 console.log('Fail to get detail user', error);
             }
         }
+
+
         userProfile();
     }, [])
 

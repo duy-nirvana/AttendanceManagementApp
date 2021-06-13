@@ -1,4 +1,5 @@
 import authReducer from "./auth";
+import faceReducer from "./face";
 import qrcodeReducer from './QRCode';
 
 const { combineReducers } = require("redux");
@@ -8,6 +9,7 @@ const rootReducer = combineReducers({
     profile: profileReducer,
     auth: authReducer,
     qrcode: qrcodeReducer,
+    face: faceReducer
 })
 
 export default rootReducer;

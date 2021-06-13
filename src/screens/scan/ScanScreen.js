@@ -3,9 +3,13 @@ import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {RNCamera} from 'react-native-camera';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
+import Face, { Enum, FaceCaptureResponse, LivenessResponse, MatchFacesResponse, MatchFacesRequest, Image as FaceImage } from '@regulaforensics/react-native-face-api-beta'
 
 import qrcodeApi from '../../api/qrcodeApi';
 import historyApi from '../../api/historyApi';
+
+var image1 = new FaceImage();
+var image2 = new FaceImage();
 
 const ScanScreen = () => {
 	const qrcodeInfo = useSelector(state => state.qrcode.qrcode);
@@ -17,6 +21,7 @@ const ScanScreen = () => {
 	const [isLoading, setLoading] = useState(false);
     const [sessionData, setSessionData] = useState(undefined);
     const [isFaceScan, setFaceScan] = useState(false);
+    const [base64Avatar, setBase64Avatar] = useState(null);
 
 	const handleBarCodeScanned = (e) => {
         if (isLoading) return;
@@ -54,6 +59,18 @@ const ScanScreen = () => {
         }
     }, [sessionData])
 
+    useEffect(() => {
+        const getFaceAvatar = async () => {
+            const faceImage =
+            await axios
+                .get(profileUser.avatar, { responseType: 'arraybuffer' })
+                .then(response => Buffer.from(response.data, 'binary').toString('base64'))
+
+            setBase64Avatar(faceImage);
+        }
+
+        getFaceAvatar();
+    }, [])
 
     useEffect(() => {
         if (qrcodeInfo) {
