@@ -34,16 +34,16 @@ const FaceScanScreen = () => {
         }
     };
 
-    const getFace1 = async () => {
-        const res =
-            await axios
-                .get(profileUser.avatar, { responseType: 'arraybuffer' })
-                .then(response => Buffer.from(response.data, 'binary').toString('base64'))
+    // const getFace1 = async () => {
+    //     const res =
+    //         await axios
+    //             .get(profileUser.avatar, { responseType: 'arraybuffer' })
+    //             .then(response => Buffer.from(response.data, 'binary').toString('base64'))
 
-        image1.bitmap = res;
-        image1.type = Enum.eInputFaceType.ift_DocumentPrinted;
-        console.log({ image1 })
-    }
+    //     image1.bitmap = res;
+    //     image1.type = Enum.eInputFaceType.ift_DocumentPrinted;
+    //     console.log({ image1 })
+    // }
 
     const matchFaces = async () => {
         if (image1 == null || image1.bitmap == null || image1.bitmap == "" || image2 == null || image2.bitmap == null || image2.bitmap == "")
@@ -73,8 +73,6 @@ const FaceScanScreen = () => {
 
     // console.log({base64Avatar})
 
-    console.log({imgAvatar})
-
     return (
         <View style={styles.container}>
             <RNCamera
@@ -90,11 +88,11 @@ const FaceScanScreen = () => {
                 ratio={ '16:9' }
             >
                 <CircleMask />
-                    {/* <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}> */}
+                    <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
                         <TouchableOpacity onPress={() => takePicture()} style={styles.capture}>
                             <Text style={{ fontSize: 14 }}> SNAP </Text>
                         </TouchableOpacity>
-                    {/* </View> */}
+                    </View>
             </RNCamera>
 
             {/* <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>

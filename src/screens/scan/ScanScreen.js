@@ -4,6 +4,9 @@ import {RNCamera} from 'react-native-camera';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
 import Face, { Enum, FaceCaptureResponse, LivenessResponse, MatchFacesResponse, MatchFacesRequest, Image as FaceImage } from '@regulaforensics/react-native-face-api-beta'
+import * as RNFS from 'react-native-fs';
+import {CircleMask} from './components/CircleMask';
+
 
 import qrcodeApi from '../../api/qrcodeApi';
 import historyApi from '../../api/historyApi';
@@ -14,19 +17,34 @@ var image2 = new FaceImage();
 const ScanScreen = () => {
 	const qrcodeInfo = useSelector(state => state.qrcode.qrcode);
 	const profileUser = useSelector(state => state.profile.profile);
+    const base64ImageAvatar = useSelector(state => state.face);
 	const dispatch = useDispatch();
 	const userClassID = profileUser.classroom._id;
 
+    const isCamera = useRef(null);
     const [hasScanned, setScanned] = useState(false);
 	const [isLoading, setLoading] = useState(false);
     const [sessionData, setSessionData] = useState(undefined);
     const [isFaceScan, setFaceScan] = useState(false);
-    const [base64Avatar, setBase64Avatar] = useState(null);
+    const cameraType = isFaceScan ? 'back' : 'front';
 
 	const handleBarCodeScanned = (e) => {
         if (isLoading) return;
         setLoading(true);
         setSessionData(e.data);
+    };
+
+    const takePicture = async () => {
+        if (isCamera) {
+            const options = { quality: .8, base64: true, mirrorImage: true, width: 120 };
+            const data = await isCamera.current.takePictureAsync(options);
+
+            const base64Image = await RNFS.readFile(data.uri, 'base64');
+
+            image2.bitmap = base64Image;
+            image2.type = Enum.eInputFaceType.ift_Live;
+            // setTakeImage(base64Image)
+        }
     };
 
     useEffect(() => {
@@ -59,18 +77,6 @@ const ScanScreen = () => {
         }
     }, [sessionData])
 
-    useEffect(() => {
-        const getFaceAvatar = async () => {
-            const faceImage =
-            await axios
-                .get(profileUser.avatar, { responseType: 'arraybuffer' })
-                .then(response => Buffer.from(response.data, 'binary').toString('base64'))
-
-            setBase64Avatar(faceImage);
-        }
-
-        getFaceAvatar();
-    }, [])
 
     useEffect(() => {
         if (qrcodeInfo) {
@@ -117,12 +123,15 @@ const ScanScreen = () => {
         }
     }, [qrcodeInfo])
 
+    console.log({base64ImageAvatar})
+
 	return (
 
 		<View style={{flex: 1}}>
 			<RNCamera
+                ref={isCamera}
 				style={[StyleSheet.absoluteFill]}
-				type={RNCamera.Constants.Type.back}
+				type={isFaceScan ? RNCamera.Constants.Type.back : RNCamera.Constants.Type.front}
 				androidCameraPermissionOptions={{
                     title: 'Permission to use camera',
                     message: 'We need your permission to use your camera',
@@ -131,7 +140,20 @@ const ScanScreen = () => {
 				}}
 				onBarCodeRead={hasScanned ? undefined : (e) => handleBarCodeScanned(e)}
 				barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
-            />
+            >
+                {
+                    !isFaceScan &&
+                    <>
+                        <CircleMask />
+                        <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
+                            <TouchableOpacity onPress={() => takePicture()} style={styles.capture}>
+                                <Text style={{ fontSize: 14 }}> SCAN </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </>
+
+                }
+            </RNCamera>
 
 			<View
 				style={{

@@ -16,7 +16,6 @@ function HomeScreen({ navigation }) {
     const [userProfile, setUserProfile] = useState({});
     const dispatch = useDispatch();
 
-
     const getFaceAvatar = async () => {
         const faceImage =
         await axios
@@ -32,16 +31,18 @@ function HomeScreen({ navigation }) {
                 const user = await userApi.getDetail(auth.userToken);
                 setRoleUser(user.roles);
                 dispatch({type: 'GET_PROFILE', payload: user});
-                await setUserProfile(user);
-                await getFaceAvatar();
+                setUserProfile(user);
             } catch (error) {
                 console.log('Fail to get detail user', error);
             }
         }
 
-
         userProfile();
     }, [])
+
+    useEffect(() => {
+        if (userProfile.avatar) getFaceAvatar();
+    }, [userProfile]);
 
     return (
         <View style={{flex: 1}}>
