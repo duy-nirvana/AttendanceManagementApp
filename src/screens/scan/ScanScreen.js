@@ -1,12 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
 import {RNCamera} from 'react-native-camera';
 import {Button} from 'react-native-elements';
 import {useDispatch, useSelector} from 'react-redux';
-import Face, { Enum, FaceCaptureResponse, LivenessResponse, MatchFacesResponse, MatchFacesRequest, Image as FaceImage } from '@regulaforensics/react-native-face-api-beta'
+import Face, { Enum, MatchFacesResponse, MatchFacesRequest, Image as FaceImage } from '@regulaforensics/react-native-face-api-beta'
 import * as RNFS from 'react-native-fs';
 import {CircleMask} from './components/CircleMask';
-
 
 import qrcodeApi from '../../api/qrcodeApi';
 import historyApi from '../../api/historyApi';
@@ -26,7 +25,12 @@ const ScanScreen = () => {
 	const [isLoading, setLoading] = useState(false);
     const [sessionData, setSessionData] = useState(undefined);
     const [isFaceScan, setFaceScan] = useState(false);
-    const cameraType = isFaceScan ? 'back' : 'front';
+    const [text, setText] = useState('nothing')
+
+    useEffect(() => {
+        image1.bitmap = base64ImageAvatar.base64Avatar;
+        image1.type = Enum.eInputFaceType.ift_DocumentPrinted;
+    }, [])
 
 	const handleBarCodeScanned = (e) => {
         if (isLoading) return;
@@ -36,15 +40,30 @@ const ScanScreen = () => {
 
     const takePicture = async () => {
         if (isCamera) {
-            const options = { quality: .8, base64: true, mirrorImage: true, width: 120 };
+            const options = { quality: 1, base64: true, mirrorImage: true, width: 100 };
             const data = await isCamera.current.takePictureAsync(options);
 
             const base64Image = await RNFS.readFile(data.uri, 'base64');
 
             image2.bitmap = base64Image;
             image2.type = Enum.eInputFaceType.ift_Live;
-            // setTakeImage(base64Image)
+            console.log(base64Image);
+            matchFaces(image1, image2)
         }
+    };
+
+    const matchFaces = async (image1, image2) => {
+        if (image1 == null || image1.bitmap == null || image1.bitmap == "" || image2 == null || image2.bitmap == null || image2.bitmap == "")
+            return
+        setText('Loading...');
+        var request = new MatchFacesRequest()
+        request.images = [image1, image2]
+        Face.matchFaces(JSON.stringify(request), response => {
+            response = MatchFacesResponse.fromJson(JSON.parse(response))
+            var matchedFaces = response.matchedFaces
+            setText(matchedFaces.length > 0 ? ((matchedFaces[0].similarity * 100).toFixed(2) + "%") : "error")
+            console.log('SUCCESS')
+        }, e => { setText(e) })
     };
 
     useEffect(() => {
@@ -123,8 +142,6 @@ const ScanScreen = () => {
         }
     }, [qrcodeInfo])
 
-    console.log({base64ImageAvatar})
-
 	return (
 
 		<View style={{flex: 1}}>
@@ -147,7 +164,7 @@ const ScanScreen = () => {
                         <CircleMask />
                         <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
                             <TouchableOpacity onPress={() => takePicture()} style={styles.capture}>
-                                <Text style={{ fontSize: 14 }}> SCAN </Text>
+                                <Text style={{ fontSize: 14 }}> SCAN {text}</Text>
                             </TouchableOpacity>
                         </View>
                     </>

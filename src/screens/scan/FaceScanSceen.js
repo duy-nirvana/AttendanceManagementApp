@@ -95,7 +95,7 @@ const FaceScanScreen = () => {
                     </View>
             </RNCamera>
 
-            {/* <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
+            <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
                 <TouchableOpacity onPress={() => takePicture()} style={styles.capture}>
                     <Text style={{ fontSize: 14 }}> SNAP </Text>
                 </TouchableOpacity>
@@ -109,7 +109,7 @@ const FaceScanScreen = () => {
                 </TouchableOpacity>
 
             </View>
-            */}
+
              {/* <Image
                 source={{ uri: `data:image/png;base64,${takeImage}` }}
                 style={{
