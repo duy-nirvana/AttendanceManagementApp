@@ -46,13 +46,12 @@ const ScanScreen = () => {
             const base64Image = await RNFS.readFile(data.uri, 'base64');
 
             image2.bitmap = base64Image;
-            image2.type = Enum.eInputFaceType.ift_Live;
-            console.log(base64Image);
-            matchFaces(image1, image2)
+            image2.type = Enum.eInputFaceType.ift_DocumentPrinted;
+            await matchFaces()
         }
     };
 
-    const matchFaces = async (image1, image2) => {
+    const matchFaces = async () => {
         if (image1 == null || image1.bitmap == null || image1.bitmap == "" || image2 == null || image2.bitmap == null || image2.bitmap == "")
             return
         setText('Loading...');
@@ -62,7 +61,6 @@ const ScanScreen = () => {
             response = MatchFacesResponse.fromJson(JSON.parse(response))
             var matchedFaces = response.matchedFaces
             setText(matchedFaces.length > 0 ? ((matchedFaces[0].similarity * 100).toFixed(2) + "%") : "error")
-            console.log('SUCCESS')
         }, e => { setText(e) })
     };
 
