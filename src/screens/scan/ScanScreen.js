@@ -1,28 +1,29 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
-import {RNCamera} from 'react-native-camera';
-import {Button} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
+import React, { useEffect, useRef, useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View, Dimensions, KeyboardAvoidingView } from 'react-native';
+import { RNCamera } from 'react-native-camera';
+import { Button } from 'react-native-elements';
+import { useDispatch, useSelector } from 'react-redux';
 import Face, { Enum, MatchFacesResponse, MatchFacesRequest, Image as FaceImage } from '@regulaforensics/react-native-face-api-beta'
 import * as RNFS from 'react-native-fs';
-import {CircleMask} from './components/CircleMask';
+import Toast from 'react-native-simple-toast';
+import { CircleMask, RestangleMask } from './components/Mask';
 
 import qrcodeApi from '../../api/qrcodeApi';
 import historyApi from '../../api/historyApi';
 
-var image1 = new FaceImage();
-var image2 = new FaceImage();
+let image1 = new FaceImage();
+let image2 = new FaceImage();
 
 const ScanScreen = () => {
-	const qrcodeInfo = useSelector(state => state.qrcode.qrcode);
-	const profileUser = useSelector(state => state.profile.profile);
+    const qrcodeInfo = useSelector(state => state.qrcode.qrcode);
+    const profileUser = useSelector(state => state.profile.profile);
     const base64ImageAvatar = useSelector(state => state.face);
-	const dispatch = useDispatch();
-	const userClassID = profileUser.classroom._id;
+    const dispatch = useDispatch();
+    const userClassID = profileUser.classroom._id;
 
     const isCamera = useRef(null);
     const [hasScanned, setScanned] = useState(false);
-	const [isLoading, setLoading] = useState(false);
+    const [isLoading, setLoading] = useState(false);
     const [sessionData, setSessionData] = useState(undefined);
     const [isFaceScan, setFaceScan] = useState(false);
     const [text, setText] = useState('nothing')
@@ -32,7 +33,7 @@ const ScanScreen = () => {
         image1.type = Enum.eInputFaceType.ift_DocumentPrinted;
     }, [])
 
-	const handleBarCodeScanned = (e) => {
+    const handleBarCodeScanned = (e) => {
         if (isLoading) return;
         setLoading(true);
         setSessionData(e.data);
@@ -54,13 +55,16 @@ const ScanScreen = () => {
     const matchFaces = async () => {
         if (image1 == null || image1.bitmap == null || image1.bitmap == "" || image2 == null || image2.bitmap == null || image2.bitmap == "")
             return
-        setText('Loading...');
+        setLoading(true);
         var request = new MatchFacesRequest()
         request.images = [image1, image2]
         Face.matchFaces(JSON.stringify(request), response => {
             response = MatchFacesResponse.fromJson(JSON.parse(response))
             var matchedFaces = response.matchedFaces
             setText(matchedFaces.length > 0 ? ((matchedFaces[0].similarity * 100).toFixed(2) + "%") : "error")
+            setLoading(false)
+            Toast.show('SUCCESS', Toast.LONG);
+            setFaceScan(true)
         }, e => { setText(e) })
     };
 
@@ -72,14 +76,14 @@ const ScanScreen = () => {
                     await qrcodeApi.getById(sessionData)
                         .then(res => {
                             if (needCancel) return;
-                            dispatch({type: 'UPDATE_QRCODE', payload: res });
+                            dispatch({ type: 'UPDATE_QRCODE', payload: res });
                             return;
                         })
                 } catch (error) {
                     if (needCancel) return;
                     setScanned(true);
                     alert('Mã QR Code không hợp lệ', error)
-                    dispatch({type: 'DELETE_QRCODE'})
+                    dispatch({ type: 'DELETE_QRCODE' })
                 } finally {
                     if (needCancel) return;
                     setLoading(false);
@@ -104,29 +108,29 @@ const ScanScreen = () => {
                         setSessionData(undefined);
                         setScanned(true);
                         setLoading(false);
-                        dispatch({type: 'DELETE_QRCODE'})
+                        dispatch({ type: 'DELETE_QRCODE' })
                         return;
                     } else {
                         await historyApi.createOne({
                             qrcode: qrcodeInfo._id,
                             user: profileUser._id,
                         })
-                        .then(() => {
-                            alert(`Bạn đã điểm danh thành công!`);
-                            setSessionData(undefined);
-                            setScanned(true);
-                            setLoading(false);
-                            dispatch({type: 'DELETE_QRCODE'});
-                            return;
-                        })
-                        .catch((error) => {
-                            alert(`Bạn đã điểm danh môn học này!!!`);
-                            setSessionData(undefined);
-                            setScanned(true);
-                            setLoading(false);
-                            dispatch({type: 'DELETE_QRCODE'});
-                            return;
-                        })
+                            .then(() => {
+                                alert(`Bạn đã điểm danh thành công!`);
+                                setSessionData(undefined);
+                                setScanned(true);
+                                setLoading(false);
+                                dispatch({ type: 'DELETE_QRCODE' });
+                                return;
+                            })
+                            .catch((error) => {
+                                alert(`Bạn đã điểm danh môn học này!!!`);
+                                setSessionData(undefined);
+                                setScanned(true);
+                                setLoading(false);
+                                dispatch({ type: 'DELETE_QRCODE' });
+                                return;
+                            })
                     }
                 }
 
@@ -134,97 +138,101 @@ const ScanScreen = () => {
             } else {
                 setScanned(true);
                 alert(`Mã QR Code đã hết hạn! `);
-                dispatch({type: 'DELETE_QRCODE'})
+                dispatch({ type: 'DELETE_QRCODE' })
                 return;
             }
         }
     }, [qrcodeInfo])
 
-	return (
+    return (
+        <KeyboardAvoidingView style={{flex: 1}}>
 
-		<View style={{flex: 1}}>
-			<RNCamera
+        <View style={{ flex: 1 }}>
+            <RNCamera
                 ref={isCamera}
-				style={[StyleSheet.absoluteFill]}
-				type={isFaceScan ? RNCamera.Constants.Type.back : RNCamera.Constants.Type.front}
-				androidCameraPermissionOptions={{
+                style={[StyleSheet.absoluteFill]}
+                type={isFaceScan ? RNCamera.Constants.Type.back : RNCamera.Constants.Type.front}
+                androidCameraPermissionOptions={{
                     title: 'Permission to use camera',
                     message: 'We need your permission to use your camera',
                     buttonPositive: 'Ok',
                     buttonNegative: 'Cancel',
-				}}
-				onBarCodeRead={hasScanned ? undefined : (e) => handleBarCodeScanned(e)}
-				barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
+                }}
+                onBarCodeRead={hasScanned ? undefined : (e) => handleBarCodeScanned(e)}
+                barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
             >
                 {
-                    !isFaceScan &&
+                    !isFaceScan ?
                     <>
                         <CircleMask />
                         <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
+                            <View
+                                style={styles.loading}
+                            >
+                                {isLoading ? (
+                                    <Button
+                                        disabled
+                                        title="Scan"
+                                        type="clear"
+                                        loading={true}
+                                        loadingProps={{ size: 'large', color: 'white' }}
+                                    />
+                                ) : (
+                                    <View style={{ flex: 1 }}></View>
+                                )}
+                            </View>
                             <TouchableOpacity onPress={() => takePicture()} style={styles.capture}>
-                                <Text style={{ fontSize: 14 }}> SCAN {text}</Text>
+                                <Text style={{ fontSize: 14 }}>Nhận Diện</Text>
                             </TouchableOpacity>
+                        </View>
+                    </>
+                    :
+                    <>
+                        <RestangleMask />
+                        <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
+                            <View
+                                style={styles.loading}
+                            >
+                                {isLoading ? (
+                                    <Button
+                                        disabled
+                                        title="Scan"
+                                        type="clear"
+                                        loading={true}
+                                        loadingProps={{ size: 'large', color: 'white' }}
+                                    />
+                                ) : (
+                                    <View style={{ flex: 1 }}></View>
+                                )}
+                            </View>
+                            {
+                                hasScanned &&
+                                <TouchableOpacity onPress={() => setScanned(false)} style={styles.capture}>
+                                    <Text style={{ fontSize: 14 }}>Quét Mã</Text>
+                                </TouchableOpacity>
+                            }
                         </View>
                     </>
 
                 }
             </RNCamera>
+        </View>
+        </KeyboardAvoidingView>
 
-			<View
-				style={{
-                    flex: 1,
-                    flexDirection: 'row',
-                    justifyContent: 'flex-end',
-                    alignItems: 'flex-start',
-				}}>
-                {isLoading ? (
-                    <Button
-                        disabled
-                        title="Scan"
-                        type="clear"
-                        loading={true}
-                        loadingProps={{size: 'large', color: 'white'}}
-                    />
-                    ) : (
-                    <View style={{flex: 1}}></View>
-                )}
-			</View>
-			{hasScanned && (
-				<TouchableOpacity
-				onPress={() => setScanned(false)}
-				style={{
-					flex: 1,
-					justifyContent: 'flex-end',
-					alignItems: 'center',
-					marginBottom: 25,
-				}}>
-				<Text
-					style={{
-					fontSize: 20,
-					backgroundColor: 'white',
-					padding: 15,
-					borderRadius: 30,
-					}}>
-
-					Scan Again
-				</Text>
-				</TouchableOpacity>
-			)}
-		</View>
-	);
+    );
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: 'black',
-	},
-	preview: {
-		flex: 1,
-		justifyContent: 'flex-end',
-		alignItems: 'center',
-	},
-	capture: {
+    container: {
+        flex: 1,
+        backgroundColor: 'black',
+    },
+    preview: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+    },
+    capture: {
         position: 'absolute',
         alignSelf: 'center',
         bottom: '3%',
@@ -233,9 +241,15 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 15,
         paddingHorizontal: 20,
-        alignSelf: 'center',
         margin: 20,
-	},
+    },
+    loading: {
+        position: 'absolute',
+        bottom: 10,
+        right: 0,
+        borderRadius: 5,
+        paddingHorizontal: 10,
+    },
 });
 
 export default ScanScreen;
