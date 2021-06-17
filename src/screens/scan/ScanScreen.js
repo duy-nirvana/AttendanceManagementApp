@@ -61,11 +61,15 @@ const ScanScreen = () => {
         Face.matchFaces(JSON.stringify(request), response => {
             response = MatchFacesResponse.fromJson(JSON.parse(response))
             var matchedFaces = response.matchedFaces
-            setText(matchedFaces.length > 0 ? ((matchedFaces[0].similarity * 100).toFixed(2) + "%") : "error")
-            setLoading(false)
-            Toast.show('SUCCESS', Toast.LONG);
-            setFaceScan(true)
-        }, e => { setText(e) })
+            if (matchedFaces.length > 0 ) {
+                setLoading(false)
+                alert(`Nhận diện khuôn mặt thành công!`);
+                setFaceScan(true)
+            } else {
+                setLoading(false)
+                alert(`Nhận diện khuôn mặt thất bại!`);
+            }
+        }, e => { console.log(e) })
     };
 
     useEffect(() => {
