@@ -33,6 +33,7 @@ const ScanScreen = () => {
         image1.type = Enum.eInputFaceType.ift_DocumentPrinted;
     }, [])
 
+
     const handleBarCodeScanned = (e) => {
         if (isLoading) return;
         setLoading(true);
@@ -41,7 +42,7 @@ const ScanScreen = () => {
 
     const takePicture = async () => {
         if (isCamera) {
-            const options = { quality: 1, base64: true, mirrorImage: true, width: 100 };
+            const options = { quality: 1, base64: true, mirrorImage: true, width: 200 };
             const data = await isCamera.current.takePictureAsync(options);
 
             const base64Image = await RNFS.readFile(data.uri, 'base64');
