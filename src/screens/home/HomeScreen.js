@@ -59,21 +59,6 @@ function HomeScreen({ navigation }) {
                     style={[styles.box_shadow, styles.greenBg]}
                 >
                     <TouchableOpacity
-                        onPress={() => navigation.navigate('FaceScan')}
-                        style={styles.flex_left}
-                    >
-                        <Icon name="scan" size={50} color="white" />
-                        <Text h4 style={{color: "white"}}>
-                            Khuon Mat
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-            <View style={styles.row}>
-                <View
-                    style={[styles.box_shadow, styles.greenBg]}
-                >
-                    <TouchableOpacity
                         onPress={() => navigation.navigate('Scan')}
                         style={styles.flex_left}
                     >

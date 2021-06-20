@@ -7,7 +7,6 @@ import axios from 'axios';
 import { Buffer } from "buffer";
 import Face, { Enum, FaceCaptureResponse, LivenessResponse, MatchFacesResponse, MatchFacesRequest, Image as FaceImage } from '@regulaforensics/react-native-face-api-beta'
 import { Dimensions } from 'react-native';
-import {CircleMask} from './components/CircleMask';
 
 var image1 = new FaceImage()
 var image2 = new FaceImage()

@@ -32,50 +32,61 @@ const HistoryAttendance = (props) => {
 
     const filterSubjects = (histories) => {
         const removeMarkSearchString = slugify(searchInput, {
-            replacement: ' ',  
-            remove: undefined, 
-            lower: true,      
-            strict: false,     
-            locale: 'vi'   
+            replacement: ' ',
+            remove: undefined,
+            lower: true,
+            strict: false,
+            locale: 'vi'
         })
 
         return histories && histories.filter((history) => {
             return slugify(history.qrcode.subject[0].name, {
-                replacement: ' ',  
-                remove: undefined, 
-                lower: true,      
-                strict: false,     
-                locale: 'vi'   
+                replacement: ' ',
+                remove: undefined,
+                lower: true,
+                strict: false,
+                locale: 'vi'
             }).includes(removeMarkSearchString)
         })
     }
 
     const renderHistory = filterSubjects(historyInfo);
 
+    const countTotalCurrent = (id) => {
+        let count = 0;
+        historyInfo.filter(history => {
+            if (history?.qrcode.subject[0]?._id === id) {
+                count++;
+            }
+        })
+
+        return count;
+    }
+
     return (
         <View>
             <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10}} >
-                <TextInput 
-                    placeholder="Tìm lịch sử điểm danh" 
+                <TextInput
+                    placeholder="Tìm lịch sử điểm danh"
                     mode="outlined"
                     value={searchInput}
                     theme={{ colors: { primary: 'black', underlineColor:'transparent' }}}
                     style={{width: '100%',  backgroundColor: 'white'}}
-                    onChangeText={(value) => setSearchInput(value)} 
+                    onChangeText={(value) => setSearchInput(value)}
                 />
                 {/* <MaterialCommunityIcons name="close" size={40} color="#000" onPress={() => handleOpenHistory(false)} /> */}
             </View>
             <ScrollView
-                style={{marginBottom: 40}}
-            >   
+                style={{marginBottom: 80}}
+            >
                     {isLoading &&
-                        <ActivityIndicator 
-                            animating={true} 
-                            color="#000" 
+                        <ActivityIndicator
+                            animating={true}
+                            color="#000"
                         />
-                    } 
-                    {   
-                        renderHistory &&
+                    }
+                    {
+                        renderHistory ?
                         renderHistory.map(history => (
                             <View
                                 key={history._id}
@@ -83,8 +94,8 @@ const HistoryAttendance = (props) => {
                             >
                                 {
                                     history.qrcode.subject.map(subject => (
-                                        <Title 
-                                            key={subject._id} 
+                                        <Title
+                                            key={subject._id}
                                             style={{marginBottom: 5}}
                                         >
                                             {subject.name}
@@ -94,7 +105,7 @@ const HistoryAttendance = (props) => {
                                 <View style={{flexWrap: 'wrap', flexDirection: "row", marginBottom: 5}}>
                                     {
                                         history.qrcode.classes.map(classes => (
-                                            <Chip 
+                                            <Chip
                                                 key={classes._id}
                                                 style={{backgroundColor: '#235789', marginRight: 5, marginTop: 5}}
                                             >
@@ -103,12 +114,15 @@ const HistoryAttendance = (props) => {
                                         ))
                                     }
                                 </View>
-                                <Subheading>Ngày điểm danh: {moment(history.createdAt).tz('Asia/Ho_Chi_Minh').format('HH:mm:ss, dddd DD/MM/YYYY')}</Subheading>    
+                                <Subheading>Đã điểm danh: {countTotalCurrent(history.qrcode.subject[0]._id) || 0} / {history.qrcode.subject[0].total || 0} buổi</Subheading>
+                                <Subheading>Thời gian: {moment(history.createdAt).tz('Asia/Ho_Chi_Minh').format('HH:mm:ss, dddd DD/MM/YYYY')}</Subheading>
                                 <Divider style={{marginTop: 15}}/>
                             </View>
-                            
+
                         ))
-                    } 
+                        :
+                        <Text>Bạn chưa có lịch sử điểm danh</Text>
+                    }
             </ScrollView>
         </View>
     )
