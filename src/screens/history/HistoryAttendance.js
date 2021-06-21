@@ -7,6 +7,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { useSelector } from 'react-redux';
 import slugify from 'slugify';
 import historyApi from '../../api/historyApi';
+import qrcodeApi from '../../api/qrcodeApi';
 
 const fullWidth = Dimensions.get("screen").width;
 
@@ -16,6 +17,7 @@ const HistoryAttendance = (props) => {
     const [historyInfo, setHistoryInfo] = useState([]);
     const [isLoading, setLoading] = useState(false);
     const [searchInput, setSearchInput] = useState('');
+    const [QRCodeByClass, setQRCodeByClass] = useState([]);
 
     useEffect(() => {
         const fetchHistory = async () => {
@@ -24,6 +26,11 @@ const HistoryAttendance = (props) => {
             .then(res => {
                 setHistoryInfo(res);
                 setLoading(false);
+            })
+
+            await qrcodeApi.getByClassId(profileUser.classroom._id)
+            .then(res => {
+                setQRCodeByClass(res);
             })
         }
 
@@ -56,6 +63,17 @@ const HistoryAttendance = (props) => {
         let count = 0;
         historyInfo.filter(history => {
             if (history?.qrcode.subject[0]?._id === id) {
+                count++;
+            }
+        })
+
+        return count;
+    }
+
+    const countTotalQRCode = (id) => {
+        let count = 0;
+        QRCodeByClass.filter(qrcode => {
+            if (qrcode?.subject[0] === id) {
                 count++;
             }
         })
@@ -114,7 +132,8 @@ const HistoryAttendance = (props) => {
                                         ))
                                     }
                                 </View>
-                                <Subheading>Đã điểm danh: {countTotalCurrent(history.qrcode.subject[0]._id) || 0} / {history.qrcode.subject[0].total || 0} buổi</Subheading>
+                                <Subheading>Đã điểm danh: {countTotalCurrent(history.qrcode.subject[0]._id)} / {history.qrcode.subject[0].total} buổi</Subheading>
+                                <Subheading>{`Vắng: ${countTotalQRCode(history.qrcode.subject[0]._id) - countTotalCurrent(history.qrcode.subject[0]._id)} buổi`}</Subheading>
                                 <Subheading>Thời gian: {moment(history.createdAt).tz('Asia/Ho_Chi_Minh').format('HH:mm:ss, dddd DD/MM/YYYY')}</Subheading>
                                 <Divider style={{marginTop: 15}}/>
                             </View>
