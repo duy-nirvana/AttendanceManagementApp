@@ -3,6 +3,7 @@ import * as React from 'react';
 import DetailsScreen from '../screens/detail';
 import QRCodeGenerate from '../screens/generate/QRCodeGenerate';
 import HistoryAttendance from '../screens/history/HistoryAttendance';
+import HistorySubjects from '../screens/history/HistorySubjects';
 import HistoryGenerate from '../screens/history/HistoryGenerate';
 import HomeScreen from '../screens/home/HomeScreen';
 import FaceScanScreen from '../screens/scan/FaceScanSceen';
@@ -30,6 +31,7 @@ const HomeStackNavigator = ({}) => {
       <Stack.Screen name="QRCodeGenerate" component={QRCodeGenerate} options={{ title: 'Tạo mã QR' }}/>
       <Stack.Screen name="HistoryGenerate" component={HistoryGenerate} options={{ title: 'Lịch sử tạo mã QR' }}/>
       <Stack.Screen name="HistoryAttendance" component={HistoryAttendance} options={{ title: 'Lịch sử điểm danh' }}/>
+      <Stack.Screen name="HistorySubjects" component={HistorySubjects} options={{ title: 'Danh sách môn học' }}/>
 
       {/* Modal */}
       <Stack.Screen name="UpdatePassword" component={UpdatePassword} options={{ title: 'Thay đổi mật khẩu' }}/>

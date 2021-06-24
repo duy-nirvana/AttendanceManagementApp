@@ -134,6 +134,11 @@ const HistoryAttendance = (props) => {
                                 </View>
                                 <Subheading>Đã điểm danh: {countTotalCurrent(history.qrcode.subject[0]._id)} / {history.qrcode.subject[0].total} buổi</Subheading>
                                 <Subheading>{`Vắng: ${countTotalQRCode(history.qrcode.subject[0]._id) - countTotalCurrent(history.qrcode.subject[0]._id)} buổi`}</Subheading>
+                                {
+                                    history.qrcode.description ?
+                                    <Subheading>Chú thích: {history.qrcode.description}</Subheading>
+                                    : null
+                                }
                                 <Subheading>Thời gian: {moment(history.createdAt).tz('Asia/Ho_Chi_Minh').format('HH:mm:ss, dddd DD/MM/YYYY')}</Subheading>
                                 <Divider style={{marginTop: 15}}/>
                             </View>

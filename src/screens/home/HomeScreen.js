@@ -64,7 +64,7 @@ function HomeScreen({ navigation }) {
                     >
                         <Icon name="scan" size={50} color="white" />
                         <Text h4 style={{color: "white"}}>
-                            Scan
+                            Điểm danh
                         </Text>
                     </TouchableOpacity>
                 </View>
@@ -77,7 +77,23 @@ function HomeScreen({ navigation }) {
                     >
                         <Icon name="people" size={50} color="white" />
                         <Text h4 style={{color: "white"}}>
-                            Attendance History
+                            Lịch sử điểm danh
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+
+            <View style={styles.row}>
+                <View
+                    style={[styles.box_shadow, styles.blueBg]}
+                >
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate('HistorySubjects')}
+                        style={styles.flex_left}
+                    >
+                        <Icon name="people" size={50} color="white" />
+                        <Text h4 style={{color: "white"}}>
+                            Danh sách môn học
                         </Text>
                     </TouchableOpacity>
                 </View>
@@ -95,7 +111,7 @@ function HomeScreen({ navigation }) {
                         >
                             <Icon name="ios-qr-code-outline" size={50} color="white" />
                             <Text h4 style={{color: "white"}}>
-                                Generate QRCode
+                                Tạo mã QR
                             </Text>
                         </TouchableOpacity>
                     </View>
@@ -108,7 +124,7 @@ function HomeScreen({ navigation }) {
                         >
                             <FontAwesome5 name="history" size={50} color="white" />
                             <Text h4 style={{color: "white"}}>
-                                Generate History
+                                Lịch sử tạo mã QR
                             </Text>
                         </TouchableOpacity>
                     </View>
