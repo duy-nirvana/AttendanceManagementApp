@@ -1,19 +1,16 @@
-import moment from 'moment-timezone';
 import 'moment/locale/vi'; // without this line it didn't work
 import React, { useEffect, useState } from 'react';
-import { Dimensions, ScrollView, View, StyleSheet, TouchableOpacity} from 'react-native';
-import { ActivityIndicator, Chip, Divider, Subheading, TextInput, Title } from 'react-native-paper';
+import { Dimensions, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-elements';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { ActivityIndicator, TextInput } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import slugify from 'slugify';
 import historyApi from '../../api/historyApi';
-import qrcodeApi from '../../api/qrcodeApi';
 
 const fullWidth = Dimensions.get("screen").width;
 
 const HistorySubjects = (props) => {
-    const { handleOpenHistory } = props;
+    const { handleOpenHistory, navigation } = props;
     const profileUser = useSelector(state => state.profile.profile);
     const [subjectsInfo, setSubjectsInfo] = useState([]);
     const [isLoading, setLoading] = useState(false);
@@ -88,6 +85,9 @@ const HistorySubjects = (props) => {
                             >
                                 <TouchableOpacity
                                     style={{alignItems: 'center', justifyContent: 'center', flex: 1}}
+                                    onPress={() => navigation.navigate('SubjectDetail', {
+                                        subjectID: subject._id
+                                    })}
                                 >
                                     <Text h4 style={{ color: "white" }}>
                                         {subject.name}

@@ -2,7 +2,7 @@ import axios from 'axios';
 import queryString from 'query-string';
 
 const axiosClient = axios.create({
-    baseURL:  'http://c6ac9957c3dd.ngrok.io/api' || 'http://192.168.1.18:8585/api' ,
+    baseURL:  'http://3f7b358f2782.ngrok.io/api' || 'http://192.168.1.18:8585/api' ,
     headers: {
         'content-type': "application/json"
     },

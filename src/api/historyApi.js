@@ -13,6 +13,10 @@ const historyApi = {
         const url = `/history/user/${id}/attendanced`;
         return axiosClient.get(url, {id});
     },
+    getDetail: (idUser, idSubject) => {
+        const url = `/history/detail?userID=${idUser}&subjectID=${idSubject}`;
+        return axiosClient.get(url, {idUser, idSubject});
+    },
     createOne: (body) => {
         const url = '/history/create';
         return axiosClient.post(url, body);
