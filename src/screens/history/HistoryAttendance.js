@@ -73,7 +73,7 @@ const HistoryAttendance = (props) => {
     const countTotalQRCode = (id) => {
         let count = 0;
         QRCodeByClass.filter(qrcode => {
-            if (qrcode?.subject[0] === id) {
+            if (qrcode?.subject[0]._id === id) {
                 count++;
             }
         })
