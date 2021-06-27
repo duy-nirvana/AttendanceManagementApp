@@ -12,6 +12,8 @@ import UpdatePassword from '../screens/settings/components/UpdatePassword';
 import SettingsScreen from '../screens/settings/SettingsScreen';
 import TabNavigator from './TabNavigator';
 import SubjectDetail from '../screens/history/SubjectDetail';
+import QRCodeDetail from '../screens/history/components/QRCodeDetail';
+import NotAttendanced from '../screens/history/components/NotAttendanced';
 
 
 const Stack = createStackNavigator();
@@ -36,6 +38,12 @@ const HomeStackNavigator = ({ }) => {
 
             {/* Modal */}
             <Stack.Screen name="UpdatePassword" component={UpdatePassword} options={{ title: 'Thay đổi mật khẩu' }} />
+            <Stack.Screen name="NotAttendanced" component={NotAttendanced} />
+            <Stack.Screen name="QRCodeDetail" component={QRCodeDetail}
+                options={{
+                    headerTitle: false,
+                    headerTransparent: true,
+                }} />
             <Stack.Screen name="SubjectDetail" component={SubjectDetail}
                 options={{
                     headerTitle: false,

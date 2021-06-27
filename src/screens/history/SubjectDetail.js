@@ -6,6 +6,7 @@ import { ActivityIndicator, TextInput, Chip } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import historyApi from '../../api/historyApi';
 import qrcodeApi from '../../api/qrcodeApi';
+import { useHeaderHeight } from '@react-navigation/stack';
 
 import Attendanced from './components/Attendanced';
 import NotAttendanced from './components/NotAttendanced';
@@ -25,13 +26,14 @@ const renderTabBar = props => (
     />
 );
 
-const SubjectDetail = ({ route: { params } }) => {
+const SubjectDetail = ({ route: { params }, navigation }) => {
     const { subjectID } = params;
     const profileUser = useSelector(state => state.profile.profile);
     const [subjectDetail, setSubjectDetail] = useState([]);
     const [isLoading, setLoading] = useState(false);
     const [searchInput, setSearchInput] = useState('');
     const [QRCodeByClass, setQRCodeByClass] = useState([]);
+    const headerHeight = useHeaderHeight();
 
     // EX
     const layout = useWindowDimensions();
@@ -50,9 +52,9 @@ const SubjectDetail = ({ route: { params } }) => {
     const renderScene = ({ route }) => {
         switch (route.key) {
             case 'first':
-                return <Attendanced  subjects={subjectDetail} />;
+                return <Attendanced subjects={subjectDetail} />;
             case 'second':
-                return <NotAttendanced  qrcodes={QRCodeByClass} subjects={subjectDetail} />;
+                return <NotAttendanced qrcodes={QRCodeByClass} subjects={subjectDetail} navigation={navigation}/>;
             default:
                 return null;
         }
@@ -93,13 +95,16 @@ const SubjectDetail = ({ route: { params } }) => {
         })
     }
 
+    const missingDays = countTotalQRCode(subjectID) - subjectDetail.length;
+
     return (
         <View
-            style={{ flex: 1, justifyContent: 'space-between', marginTop: 50, padding: 10 }}
+            style={{ flex: 1, justifyContent: 'space-between', marginTop: headerHeight, padding: 10 }}
         >
+
             <View style={[styles.box_shadow, styles.blueBg, { borderBottomRightRadius: 0, borderBottomLeftRadius: 0 }]} >
-                <Chip style={{ backgroundColor: '#235789', textAlign: 'center', padding: 10, alignSelf: 'center'}}>
-                    <Text h4 style={{ color: "white"  }}>
+                <Chip style={{ backgroundColor: '#235789', textAlign: 'center', padding: 10, alignSelf: 'center' }}>
+                    <Text h4 style={{ color: "white" }}>
                         {subjectDetail[0]?.qrcode.subject.name}
                     </Text>
                 </Chip>
@@ -107,29 +112,12 @@ const SubjectDetail = ({ route: { params } }) => {
                     Giảng viên: {subjectDetail[0]?.qrcode.user[0].fullName}
                 </Text>
                 <Text h4 style={{ color: "white", lineHeight: 40 }}>
-                    {`Đã điểm danh: ${subjectDetail.length} / ${subjectDetail[0]?.qrcode.subject.total} buổi`}
+                    {`Đã điểm danh: ${subjectDetail.length} / ${subjectDetail[0]?.qrcode.subject.total ? subjectDetail[0]?.qrcode.subject.total : 0} buổi`}
                 </Text>
                 <Text h4 style={{ color: "white", lineHeight: 40 }}>
-                    {`Vắng: ${countTotalQRCode(subjectID) - subjectDetail.length} buổi`}
+                    {`Vắng: ${missingDays} buổi`}
                 </Text>
-                <Button
-                    title="Điểm danh"
-                    titleStyle={{ fontSize: 20, color: 'white', lineHeight: 40 }}
-                    buttonStyle={[styles.redBg]}
-                />
             </View>
-            {/* <ScrollView
-                style={{ marginBottom: 80 }}
-            >
-                {isLoading &&
-                    <ActivityIndicator
-                        animating={true}
-                        color="#000"
-                    />
-                }
-
-            </ScrollView> */}
-
             <TabView
                 renderTabBar={renderTabBar}
                 navigationState={{ index, routes }}
@@ -138,6 +126,7 @@ const SubjectDetail = ({ route: { params } }) => {
                 initialLayout={{ width: layout.width }}
                 style={{ height: fullHeight }}
             />
+
         </View>
     )
 }
