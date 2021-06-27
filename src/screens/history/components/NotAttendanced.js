@@ -54,7 +54,11 @@ const NotAttendanced = ({ qrcodes, subjects, navigation }) => {
                                         type='material-community'
                                         size={30}
                                         style={{ alignSelf: 'flex-end', backgroundColor: '#555', borderRadius: 50, padding: 10 }}
-                                        onPress={() => navigation.navigate("QRCodeDetail")}
+                                        onPress={() => navigation.navigate("QRCodeDetail", {
+                                            subjectName: subject.subject[0].name,
+                                            qrcodeInfo: subject._id,
+                                            createdAt: subject.createdAt
+                                        })}
                                     />
                                 </View>
                                 <Divider style={{ marginTop: 15 }} />
