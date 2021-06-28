@@ -6,7 +6,6 @@ import HistoryAttendance from '../screens/history/HistoryAttendance';
 import HistorySubjects from '../screens/history/HistorySubjects';
 import HistoryGenerate from '../screens/history/HistoryGenerate';
 import HomeScreen from '../screens/home/HomeScreen';
-import FaceScanScreen from '../screens/scan/FaceScanSceen';
 import ScanScreen from '../screens/scan/ScanScreen';
 import UpdatePassword from '../screens/settings/components/UpdatePassword';
 import SettingsScreen from '../screens/settings/SettingsScreen';
@@ -14,6 +13,7 @@ import TabNavigator from './TabNavigator';
 import SubjectDetail from '../screens/history/SubjectDetail';
 import QRCodeDetail from '../screens/history/components/QRCodeDetail';
 import NotAttendanced from '../screens/history/components/NotAttendanced';
+import FaceScanScreen from '../screens/history/components/FaceScanScreen';
 
 
 const Stack = createStackNavigator();
@@ -39,12 +39,26 @@ const HomeStackNavigator = ({ }) => {
             {/* Modal */}
             <Stack.Screen name="UpdatePassword" component={UpdatePassword} options={{ title: 'Thay đổi mật khẩu' }} />
             <Stack.Screen name="NotAttendanced" component={NotAttendanced} />
-            <Stack.Screen name="QRCodeDetail" component={QRCodeDetail}
+            <Stack.Screen
+                name="QRCodeDetail"
+                component={QRCodeDetail}
                 options={{
                     headerTitle: false,
                     headerTransparent: true,
                 }} />
-            <Stack.Screen name="SubjectDetail" component={SubjectDetail}
+
+            <Stack.Screen
+                name="FaceScanScreen"
+                component={FaceScanScreen}
+                options={{
+                    headerTitle: false,
+                    headerShown: true,
+                    headerTransparent: true,
+                }}
+            />
+            <Stack.Screen
+                name="SubjectDetail"
+                component={SubjectDetail}
                 options={{
                     headerTitle: false,
                     headerTransparent: true,

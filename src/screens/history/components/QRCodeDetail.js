@@ -1,18 +1,16 @@
+import { useHeaderHeight } from '@react-navigation/stack';
 import moment from 'moment-timezone';
 import 'moment/locale/vi';
 import React, { useState } from 'react';
-import { ScrollView, View, Dimensions, StyleSheet, TouchableOpacity } from 'react-native';
-import { Button } from 'react-native-paper';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-elements';
-import { ActivityIndicator, Chip, Divider, Subheading } from 'react-native-paper';
-import { useHeaderHeight } from '@react-navigation/stack';
+import { Button } from 'react-native-paper';
 import QRCode from 'react-native-qrcode-svg';
 import { useDispatch, useSelector } from 'react-redux';
-import historyApi from '../../../api/historyApi';
 
 const fullWidth = Dimensions.get("screen").width;
 
-const QRCodeDetail = ({ route: { params } }) => {
+const QRCodeDetail = ({ route: { params }, navigation }) => {
     const { qrcode, createdAt, subjectName } = params;
     const profileUser = useSelector(state => state.profile.profile);
     const [isLoading, setLoading] = useState(false);
@@ -21,31 +19,13 @@ const QRCodeDetail = ({ route: { params } }) => {
     const headerHeight = useHeaderHeight();
 
     const handleScanQRCode = async () => {
-        // setLoading(true);
-        console.log('success')
-
         if (!qrcode.isOutOfDate) {
-            historyApi.createOne({
+            navigation.navigate('FaceScanScreen', {
                 qrcode: qrcode._id,
                 user: profileUser._id,
-            })
-                .then(() => {
-                    alert(`Bạn đã điểm danh thành công!`);
-                    setLoading(false);
-                    console.log('success')
-                    dispatch({ type: 'DELETE_QRCODE' });
-                    return;
-                })
-                .catch((error) => {
-                    alert(`Bạn đã điểm danh môn học này!!!`);
-                    console.log('attendanced')
-                    setLoading(false);
-                    dispatch({ type: 'DELETE_QRCODE' });
-                    return;
-                })
+            });
         } else {
             alert(`Mã QR Code đã hết hạn! `);
-            console.log('out of date')
             setLoading(false);
             dispatch({ type: 'DELETE_QRCODE' })
             return;

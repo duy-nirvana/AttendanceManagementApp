@@ -17,16 +17,12 @@ const NotAttendanced = ({ qrcodes, subjects, navigation }) => {
         })
 
         let result = qrcodesFiltered.filter(qrcode => {
-            console.log({qrcodesFiltered});
-            console.log({subjectIDs});
-
             return subjectIDs.indexOf(qrcode._id) === -1;
         })
         return result;
     }
 
     const subjectsNotAttendance = filterQRCode();
-    console.log({ subjectsNotAttendance })
 
     return (
         <>
