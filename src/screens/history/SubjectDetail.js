@@ -103,11 +103,11 @@ const SubjectDetail = ({ route: { params }, navigation }) => {
         >
 
             <View style={[styles.box_shadow, styles.blueBg, { borderBottomRightRadius: 0, borderBottomLeftRadius: 0 }]} >
-                <Chip style={{ backgroundColor: '#235789', textAlign: 'center', padding: 10, alignSelf: 'center' }}>
+                <View style={{ backgroundColor: '#235789', textAlign: 'center', padding: 10, alignSelf: 'center', borderRadius: 10}}>
                     <Text h4 style={{ color: "white" }}>
                         {subjectDetail[0]?.qrcode.subject.name}
                     </Text>
-                </Chip>
+                </View>
                 <Text h4 style={{ color: "white", lineHeight: 40 }}>
                     Giảng viên: {subjectDetail[0]?.qrcode.user[0].fullName}
                 </Text>
