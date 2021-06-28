@@ -3,21 +3,30 @@ import 'moment/locale/vi';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, View, Modal } from 'react-native';
 import { Text, Icon } from 'react-native-elements';
-import { ActivityIndicator, Chip, Divider, Subheading,  } from 'react-native-paper';
+import { ActivityIndicator, Chip, Divider, Subheading, } from 'react-native-paper';
 
 const NotAttendanced = ({ qrcodes, subjects, navigation }) => {
     const [isLoading, setLoading] = useState(false);
 
     const filterQRCode = () => {
-        return qrcodes.filter(qrcode => {
-            return qrcode?.subject[0]._id === subjects[0]?.qrcode.subject._id;
+        const qrcodeSubjectID = subjects.map((sub) => sub.qrcode.subject._id);
+        const subjectIDs = subjects.map((sub) => sub.qrcode._id);
+
+        const qrcodesFiltered = qrcodes.filter(qrcode => {
+            return qrcodeSubjectID.indexOf(qrcode.subject[0]._id) !== -1;
         })
-            .filter((qrcode, index) => {
-                return qrcode._id !== subjects[index]?.qrcode._id
-            })
+
+        let result = qrcodesFiltered.filter(qrcode => {
+            console.log({qrcodesFiltered});
+            console.log({subjectIDs});
+
+            return subjectIDs.indexOf(qrcode._id) === -1;
+        })
+        return result;
     }
 
     const subjectsNotAttendance = filterQRCode();
+    console.log({ subjectsNotAttendance })
 
     return (
         <>
@@ -56,7 +65,7 @@ const NotAttendanced = ({ qrcodes, subjects, navigation }) => {
                                         style={{ alignSelf: 'flex-end', backgroundColor: '#555', borderRadius: 50, padding: 10 }}
                                         onPress={() => navigation.navigate("QRCodeDetail", {
                                             subjectName: subject.subject[0].name,
-                                            qrcodeInfo: subject._id,
+                                            qrcode: subject,
                                             createdAt: subject.createdAt
                                         })}
                                     />

@@ -8,14 +8,49 @@ import { ActivityIndicator, Chip, Divider, Subheading } from 'react-native-paper
 import { useHeaderHeight } from '@react-navigation/stack';
 import QRCode from 'react-native-qrcode-svg';
 import { useDispatch, useSelector } from 'react-redux';
+import historyApi from '../../../api/historyApi';
 
 const fullWidth = Dimensions.get("screen").width;
 
 const QRCodeDetail = ({ route: { params } }) => {
-    const { qrcodeInfo, createdAt, subjectName } = params;
+    const { qrcode, createdAt, subjectName } = params;
+    const profileUser = useSelector(state => state.profile.profile);
     const [isLoading, setLoading] = useState(false);
+    const dispatch = useDispatch();
 
     const headerHeight = useHeaderHeight();
+
+    const handleScanQRCode = async () => {
+        // setLoading(true);
+        console.log('success')
+
+        if (!qrcode.isOutOfDate) {
+            historyApi.createOne({
+                qrcode: qrcode._id,
+                user: profileUser._id,
+            })
+                .then(() => {
+                    alert(`Bạn đã điểm danh thành công!`);
+                    setLoading(false);
+                    console.log('success')
+                    dispatch({ type: 'DELETE_QRCODE' });
+                    return;
+                })
+                .catch((error) => {
+                    alert(`Bạn đã điểm danh môn học này!!!`);
+                    console.log('attendanced')
+                    setLoading(false);
+                    dispatch({ type: 'DELETE_QRCODE' });
+                    return;
+                })
+        } else {
+            alert(`Mã QR Code đã hết hạn! `);
+            console.log('out of date')
+            setLoading(false);
+            dispatch({ type: 'DELETE_QRCODE' })
+            return;
+        }
+    }
 
     return (
         <View style={{ flex: 1, justifyContent: 'space-evenly', alignItems: 'center', padding: 10, marginTop: headerHeight }}>
@@ -25,15 +60,15 @@ const QRCodeDetail = ({ route: { params } }) => {
             </View>
             <QRCode
                 size={fullWidth * 0.9}
-                value={qrcodeInfo}
+                value={qrcode._id}
             />
             <Button
-                disabled={isLoading ? true : false}
+                // disabled={isLoading ? true : false}
                 mode="outlined"
                 color="white"
                 loading={isLoading}
                 style={[{ padding: 20, marginTop: 10 }, styles.redBg]}
-                onPress={() => console.log('press')}
+                onPress={handleScanQRCode}
             >
                 Điểm danh
             </Button>
