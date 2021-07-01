@@ -9,6 +9,10 @@ const historyApi = {
         const url = `/history/user/${id}`;
         return axiosClient.get(url, {id});
     },
+    getQRCodes: (id) => {
+        const url = `/history/qrcode/${id}`;
+        return axiosClient.get(url, {id});
+    },
     getSubjects: (id) => {
         const url = `/history/user/${id}/attendanced`;
         return axiosClient.get(url, {id});

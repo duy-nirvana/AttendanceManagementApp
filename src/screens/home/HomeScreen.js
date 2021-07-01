@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 import userApi from '../../api/userApi';
 import axios from 'axios';
-import {Buffer} from 'buffer';
+import { Buffer } from 'buffer';
 
 const background = require('../../assets/img/bg.png');
 
@@ -18,11 +18,11 @@ function HomeScreen({ navigation }) {
 
     const getFaceAvatar = async () => {
         const faceImage =
-        await axios
-            .get(userProfile.avatar, { responseType: 'arraybuffer' })
-            .then(response => Buffer.from(response.data, 'binary').toString('base64'))
+            await axios
+                .get(userProfile.avatar, { responseType: 'arraybuffer' })
+                .then(response => Buffer.from(response.data, 'binary').toString('base64'))
 
-        dispatch({type: 'GET_BASE64_AVATAR', payload: faceImage});
+        dispatch({ type: 'GET_BASE64_AVATAR', payload: faceImage });
     }
 
     useEffect(() => {
@@ -30,7 +30,7 @@ function HomeScreen({ navigation }) {
             try {
                 const user = await userApi.getDetail(auth.userToken);
                 setRoleUser(user.roles);
-                dispatch({type: 'GET_PROFILE', payload: user});
+                dispatch({ type: 'GET_PROFILE', payload: user });
                 setUserProfile(user);
             } catch (error) {
                 console.log('Fail to get detail user', error);
@@ -45,12 +45,12 @@ function HomeScreen({ navigation }) {
     }, [userProfile]);
 
     return (
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
             <Image
                 source={background}
                 style={[styles.background_img, styles.justify_center]}
             >
-                <Text h1 style={{color: "white"}}>
+                <Text h1 style={{ color: "white" }}>
                     Home
                 </Text>
             </Image>
@@ -63,7 +63,7 @@ function HomeScreen({ navigation }) {
                         style={styles.flex_left}
                     >
                         <Icon name="scan" size={50} color="white" />
-                        <Text h4 style={{color: "white"}}>
+                        <Text h4 style={{ color: "white" }}>
                             Điểm danh
                         </Text>
                     </TouchableOpacity>
@@ -75,25 +75,9 @@ function HomeScreen({ navigation }) {
                         onPress={() => navigation.navigate('HistoryAttendance')}
                         style={styles.flex_left}
                     >
-                        <Icon name="people" size={50} color="white" />
-                        <Text h4 style={{color: "white"}}>
+                        <Icon name="people-outline" size={50} color="white" />
+                        <Text h4 style={{ color: "white" }}>
                             Lịch sử điểm danh
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-
-            <View style={styles.row}>
-                <View
-                    style={[styles.box_shadow, styles.blueBg]}
-                >
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate('HistorySubjects')}
-                        style={styles.flex_left}
-                    >
-                        <Icon name="people" size={50} color="white" />
-                        <Text h4 style={{color: "white"}}>
-                            Danh sách môn học
                         </Text>
                     </TouchableOpacity>
                 </View>
@@ -110,7 +94,7 @@ function HomeScreen({ navigation }) {
                             style={styles.flex_left}
                         >
                             <Icon name="ios-qr-code-outline" size={50} color="white" />
-                            <Text h4 style={{color: "white"}}>
+                            <Text h4 style={{ color: "white" }}>
                                 Tạo mã QR
                             </Text>
                         </TouchableOpacity>
@@ -123,13 +107,45 @@ function HomeScreen({ navigation }) {
                             style={styles.flex_left}
                         >
                             <FontAwesome5 name="history" size={50} color="white" />
-                            <Text h4 style={{color: "white"}}>
+                            <Text h4 style={{ color: "white" }}>
                                 Lịch sử tạo mã QR
                             </Text>
                         </TouchableOpacity>
                     </View>
                 </View>
             }
+            <View style={styles.row}>
+                {
+                    roleUser === 'moderator' &&
+                    <View
+                        style={[styles.box_shadow, styles.violetBg]}
+                    >
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('ClassroomScreen')}
+                            style={styles.flex_left}
+                        >
+                            <Icon name="book-outline" size={50} color="white" />
+                            <Text h4 style={{ color: "white" }}>
+                                Quản lý lớp học
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                }
+
+                <View
+                    style={[styles.box_shadow, styles.orangeBg]}
+                >
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate('HistorySubjects')}
+                        style={styles.flex_left}
+                    >
+                        <Icon name="file-tray-full-outline" size={50} color="white" />
+                        <Text h4 style={{ color: "white" }}>
+                            Danh sách môn học
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
         </View>
     );
 }
@@ -181,6 +197,12 @@ const styles = StyleSheet.create({
     },
     yellowBg: {
         backgroundColor: "#f7b928"
+    },
+    orangeBg: {
+        backgroundColor: "#EF6306"
+    },
+    violetBg: {
+        backgroundColor: "#541388"
     },
 })
 

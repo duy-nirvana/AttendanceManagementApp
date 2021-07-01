@@ -19,11 +19,16 @@ const HistorySubjects = (props) => {
     useEffect(() => {
         const fetchSubjects = async () => {
             setLoading(true);
-            historyApi.getSubjects(profileUser._id)
-                .then(res => {
+            try {
+                const res = await historyApi.getSubjects(profileUser._id);
+                if (res) {
                     setSubjectsInfo(res[0].subjects);
-                    setLoading(false);
-                })
+                }
+                setLoading(false);
+            } catch (e) {
+                setLoading(false)
+                console.log('can not get subjects: ', e);
+            }
 
         }
 
@@ -50,7 +55,7 @@ const HistorySubjects = (props) => {
         })
     }
 
-    const renderSubjects = filterSubjects(subjectsInfo);
+    const renderSubjects = filterSubjects && filterSubjects(subjectsInfo);
 
     return (
         <View>
@@ -60,7 +65,7 @@ const HistorySubjects = (props) => {
                     mode="outlined"
                     value={searchInput}
                     theme={{ colors: { primary: 'black', underlineColor: 'transparent' } }}
-                    style={{ width: '100%', backgroundColor: 'transparent'}}
+                    style={{ width: '100%', backgroundColor: 'transparent' }}
                     onChangeText={(value) => setSearchInput(value)}
                 />
             </View>
@@ -74,28 +79,30 @@ const HistorySubjects = (props) => {
                     />
                 }
                 {
-                    renderSubjects &&
-                    renderSubjects.map(subject => (
-                        <View
-                            key={subject._id}
-                            style={{ padding: 10 }}
-                        >
+                    subjectsInfo.length !== 0 ?
+                        renderSubjects.map(subject => (
                             <View
-                                style={[styles.box_shadow, styles.blueBg]}
+                                key={subject._id}
+                                style={{ padding: 10 }}
                             >
-                                <TouchableOpacity
-                                    style={{alignItems: 'center', justifyContent: 'center', flex: 1}}
-                                    onPress={() => navigation.navigate('SubjectDetail', {
-                                        subjectID: subject._id
-                                    })}
+                                <View
+                                    style={[styles.box_shadow, styles.blueBg]}
                                 >
-                                    <Text h4 style={{ color: "white" }}>
-                                        {subject.name}
-                                    </Text>
-                                </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}
+                                        onPress={() => navigation.navigate('SubjectDetail', {
+                                            subjectID: subject._id
+                                        })}
+                                    >
+                                        <Text h4 style={{ color: "white" }}>
+                                            {subject.name}
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
-                        </View>
-                    ))
+                        ))
+                        :
+                        <Text></Text>
 
                 }
             </ScrollView>

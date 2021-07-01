@@ -14,6 +14,8 @@ import SubjectDetail from '../screens/history/SubjectDetail';
 import QRCodeDetail from '../screens/history/components/QRCodeDetail';
 import NotAttendanced from '../screens/history/components/NotAttendanced';
 import FaceScanScreen from '../screens/history/components/FaceScanScreen';
+import ClassroomScreen from '../screens/classrooms/ClassroomScreen';
+import ClassroomDetail from '../screens/classrooms/components/ClassroomDetail';
 
 
 const Stack = createStackNavigator();
@@ -35,6 +37,21 @@ const HomeStackNavigator = ({ }) => {
             <Stack.Screen name="HistoryGenerate" component={HistoryGenerate} options={{ title: 'Lịch sử tạo mã QR' }} />
             <Stack.Screen name="HistoryAttendance" component={HistoryAttendance} options={{ title: 'Lịch sử điểm danh' }} />
             <Stack.Screen name="HistorySubjects" component={HistorySubjects} options={{ title: 'Danh sách môn học' }} />
+
+            <Stack.Screen name="ClassroomScreen" component={ClassroomScreen}
+                options={{
+                    headerTitle: false,
+                    headerShown: true,
+                    headerTransparent: true,
+                }}
+            />
+            <Stack.Screen name="ClassroomDetail" component={ClassroomDetail}
+                options={{
+                    headerTitle: false,
+                    headerShown: true,
+                    headerTransparent: true,
+                }}
+            />
 
             {/* Modal */}
             <Stack.Screen name="UpdatePassword" component={UpdatePassword} options={{ title: 'Thay đổi mật khẩu' }} />
