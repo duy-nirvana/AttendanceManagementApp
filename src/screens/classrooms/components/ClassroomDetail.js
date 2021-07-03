@@ -6,7 +6,6 @@ import { Text, Button } from 'react-native-elements';
 import { ActivityIndicator, Chip, Divider, Subheading, TextInput, Title, Switch } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import historyApi from '../../../api/historyApi';
-import qrcodeApi from '../../../api/qrcodeApi';
 import { useHeaderHeight } from '@react-navigation/stack';
 
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
@@ -34,6 +33,8 @@ const ClassroomDetail = ({ route: { params }, navigation }) => {
     const [searchInput, setSearchInput] = useState('');
     const [QRCodeByClass, setQRCodeByClass] = useState([]);
     const headerHeight = useHeaderHeight();
+    const [users, setUsers] = useState([]);
+    const [qrcodes, setQRCodes] = useState([]);
 
     const layout = useWindowDimensions();
 
@@ -43,37 +44,34 @@ const ClassroomDetail = ({ route: { params }, navigation }) => {
         { key: 'second', title: 'Chưa điểm danh' },
     ]);
 
+    useEffect(() => {
+        const getQRCodes = async () => {
+            setLoading(true);
+            try {
+                const res = await historyApi.getQRCodes(qrcode._id)
+                if (res) {
+                    setQRCodes(res);
+                }
+            } catch (e) {
+                console.log('fail to get qrcodes ', e);
+            }
+        }
+
+        getQRCodes();
+    }, [qrcodes])
+
     const allClasses = qrcode.classes.map(classroom => classroom._id);
 
     const renderScene = ({ route }) => {
         switch (route.key) {
             case 'first':
-                return <ClassroomAttendanced  qrcodeId={qrcode._id} />;
+                return <ClassroomAttendanced  qrcodes={qrcodes} />;
             case 'second':
-                return <ClassroomNotAttendanced classes={allClasses} />;
+                return <ClassroomNotAttendanced classes={allClasses} usersAttendance={qrcodes} />;
             default:
                 return null;
         }
     }
-
-    // useEffect(() => {
-    //     const fetchDetailSubject = async () => {
-    //         setLoading(true);
-    //         historyApi.getDetail(profileUser._id, subjectID)
-    //             .then(res => {
-    //                 setSubjectDetail(res);
-    //                 setLoading(false);
-    //             })
-
-    //         qrcodeApi.getByClassId(profileUser.classroom._id)
-    //             .then(res => {
-    //                 setQRCodeByClass(res);
-    //             })
-    //     }
-
-    //     fetchDetailSubject();
-    // }, [])
-
 
     return (
         <View
@@ -86,19 +84,19 @@ const ClassroomDetail = ({ route: { params }, navigation }) => {
                         {qrcode.subject[0].name}
                     </Text>
                 </View>
-                <View style={{ flexWrap: 'wrap', flexDirection: "row", marginBottom: 15 }}>
+                <View style={{ flexWrap: 'wrap', flexDirection: "row", marginBottom: 10 }}>
                     {
                         qrcode.classes.map(classroom => (
                             <Chip
                                 key={classroom._id}
-                                style={{ backgroundColor: '#235789', marginRight: 5, marginTop: 5 }}
+                                style={[ styles.orangeBg, { marginRight: 5, marginTop: 5 }]}
                             >
                                 <Subheading style={{ color: '#fff' }}>{classroom.name}</Subheading>
                             </Chip>
                         ))
                     }
                 </View>
-                <Text h4 style={{ color: "white", lineHeight: 40, marginBottom: 15 }}>
+                <Text h4 style={{ color: "white", lineHeight: 40 }}>
                     {
                         qrcode.isOutOfDate ?
                             <Chip style={styles.redBg}>
@@ -109,16 +107,6 @@ const ClassroomDetail = ({ route: { params }, navigation }) => {
                                 <Subheading style={{ color: '#fff' }}>Còn hạn sử dụng</Subheading>
                             </Chip
                             >}
-                </Text>
-                <Text h4 style={{ color: "white", lineHeight: 40 }}>
-                    {
-                        qrcode.description ?
-                            <Subheading>
-                                Chú thích: {qrcode.description}
-                            </Subheading>
-                            :
-                            null
-                    }
                 </Text>
                 <Text h4 style={{ color: "white", lineHeight: 40 }}>
                     {moment(qrcode.createdAt).tz('Asia/Ho_Chi_Minh').format('HH:mm:s - dddd DD/MM/YYYY')}
@@ -184,5 +172,8 @@ const styles = StyleSheet.create({
     },
     yellowBg: {
         backgroundColor: "#f7b928"
+    },
+    orangeBg: {
+        backgroundColor: "#EF6306"
     },
 })

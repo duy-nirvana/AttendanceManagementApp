@@ -1,85 +1,133 @@
 import moment from 'moment-timezone';
 import 'moment/locale/vi';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View, Modal } from 'react-native';
+import { ScrollView, View, Modal, StyleSheet } from 'react-native';
 import { Text, Icon } from 'react-native-elements';
 import { ActivityIndicator, Chip, Divider, Subheading, } from 'react-native-paper';
+import userApi from '../../../api/userApi';
 
-const ClassroomNotAttendanced = () => {
+const ClassroomNotAttendanced = ({ classes, usersAttendance }) => {
     const [isLoading, setLoading] = useState(false);
+    const [users, setUsers] = useState([]);
+    const [usersNotAttendance, setUsersNotAttendance] = useState([]);
 
+    useEffect(() => {
+        const getUserByClasses = async () => {
+            try {
+                const res = await userApi.getByClasses({ classes });
+                setUsers(res);
+            } catch (error) {
+                console.log('can not get users');
+            };
+        }
 
-    // const filterQRCode = () => {
-    //     const qrcodeSubjectID = subjects.map((sub) => sub.qrcode.subject._id);
-    //     const subjectIDs = subjects.map((sub) => sub.qrcode._id);
+        getUserByClasses();
+    }, [])
 
-    //     const qrcodesFiltered = qrcodes.filter(qrcode => {
-    //         return qrcodeSubjectID.indexOf(qrcode.subject[0]._id) !== -1;
-    //     })
+    useEffect(() => {
+        const filterNotAttendanceUsers = async () => {
+            // if (usersAttendance.length === 0) return;
+            const usersAttendanceIDs = await usersAttendance.map(user => user.user._id);
 
-    //     let result = qrcodesFiltered.filter(qrcode => {
-    //         return subjectIDs.indexOf(qrcode._id) === -1;
-    //     })
-    //     return result;
-    // }
+            const filterUserNotAtteandance = users.filter(user => {
+                return usersAttendanceIDs.indexOf(user._id) === -1 && user.roles !== 'moderator';
+            })
 
-    // const subjectsNotAttendance = filterQRCode();
+            setUsersNotAttendance(filterUserNotAtteandance);
+        }
+
+        filterNotAttendanceUsers();
+    }, [usersAttendance])
 
     return (
-        // <>
-        //     <ScrollView style={{ flex: 1 }}>
-        //         {isLoading &&
-        //             <ActivityIndicator
-        //                 animating={true}
-        //                 color="#000"
-        //             />
-        //         }
-        //         {
-        //             subjectsNotAttendance ?
-        //                 subjectsNotAttendance.map(subject => (
-        //                     <View
-        //                         key={subject._id}
-        //                         style={{ padding: 10 }}
-        //                     >
-        //                         <View style={{ flexWrap: 'wrap', flexDirection: "row", marginBottom: 5 }}>
-        //                             {
-        //                                 subject.classes.map(classes => (
-        //                                     <Chip
-        //                                         key={classes._id}
-        //                                         style={{ backgroundColor: '#235789', marginRight: 5, marginTop: 5 }}
-        //                                     >
-        //                                         <Subheading style={{ color: '#fff' }}>{classes.name}</Subheading>
-        //                                     </Chip>
-        //                                 ))
-        //                             }
-        //                         </View>
-        //                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-        //                             <Subheading>Thời gian: {moment(subject.createdAt).tz('Asia/Ho_Chi_Minh').format('HH:mm:ss, dddd DD/MM/YYYY')}</Subheading>
-        //                             <Icon
-        //                                 name='qrcode'
-        //                                 type='material-community'
-        //                                 size={30}
-        //                                 style={{ alignSelf: 'flex-end', backgroundColor: '#555', borderRadius: 50, padding: 10 }}
-        //                                 onPress={() => navigation.navigate("QRCodeDetail", {
-        //                                     subjectName: subject.subject[0].name,
-        //                                     qrcode: subject,
-        //                                     createdAt: subject.createdAt
-        //                                 })}
-        //                             />
-        //                         </View>
-        //                         <Divider style={{ marginTop: 15 }} />
+        <>
+            <ScrollView style={{ flex: 1 }}>
+
+                {
+                    usersNotAttendance.length !== 0 ?
+                        usersNotAttendance.map(user => (
+                            <View
+                                key={user._id}
+                                style={{ padding: 10 }}
+                            >
+                                <Text h1>{user.fullName}</Text>
+                                <Text>MSSV: {user.codeNumber}</Text>
 
 
-        //                     </View>
+                                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                    <Text>Lớp </Text>
+                                    <Chip
+                                        key={user._id}
+                                        style={[styles.orangeBg, { marginRight: 5, marginTop: 5 }]}
+                                    >
+                                        <Subheading style={{ color: '#fff' }}>{user.classroom.name}</Subheading>
+                                    </Chip>
+                                </View>
 
-        //                 ))
-        //                 :
-        //                 <Text>Bạn chưa có lịch sử vắng</Text>
-        //         }
-        //     </ScrollView>
-        // </>
-        <Text>NOTGA</Text>
+                            </View>
+
+                        ))
+                        :
+                        <ActivityIndicator
+                            animating={true}
+                            color="#000"
+                        />
+                }
+            </ScrollView>
+        </>
     )
 };
 
 export default ClassroomNotAttendanced;
+
+const styles = StyleSheet.create({
+    row: {
+        flex: .30,
+        flexDirection: 'row',
+        justifyContent: 'center'
+    },
+    flex_left: {
+        flex: 1,
+        justifyContent: 'space-around',
+        alignItems: 'flex-start',
+    },
+    justify_center: {
+        justifyContent: "center"
+    },
+    box_shadow: {
+        width: '100%',
+        borderRadius: 10,
+        justifyContent: 'center',
+        padding: 20,
+
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.23,
+        shadowRadius: 2.62,
+        elevation: 2,
+    },
+    background_img: {
+        width: '100%',
+        height: 100,
+        marginBottom: 10,
+        padding: 15
+    },
+    redBg: {
+        backgroundColor: "#f3425f"
+    },
+    blueBg: {
+        backgroundColor: "#1878f3"
+    },
+    greenBg: {
+        backgroundColor: "#45bd63"
+    },
+    yellowBg: {
+        backgroundColor: "#f7b928"
+    },
+    orangeBg: {
+        backgroundColor: "#EF6306"
+    },
+})

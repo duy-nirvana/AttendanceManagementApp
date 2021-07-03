@@ -1,34 +1,32 @@
 import moment from 'moment-timezone';
 import 'moment/locale/vi';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { ScrollView, View, StyleSheet } from 'react-native';
 import { Text } from 'react-native-elements';
 import { ActivityIndicator, Chip, Divider, Subheading } from 'react-native-paper';
 
 import historyApi from '../../../api/historyApi';
 
-const ClassroomAttendanced = ({ qrcodeId }) => {
+const ClassroomAttendanced = ({ qrcodes }) => {
     const [isLoading, setLoading] = useState(false);
-    const [qrcodes, setQRCodes] = useState([]);
+    // const [qrcodes, setQRCodes] = useState([]);
 
-    useEffect(() => {
-        const getQRCodes = async () => {
-            setLoading(true);
-            try {
-                const res = await historyApi.getQRCodes(qrcodeId)
-                if (res) {
-                    setQRCodes(res);
-                }
-                setLoading(false)
-            } catch (e) {
-                console.log('fail to get qrcodes ', e);
-            }
-        }
+    // useEffect(() => {
+    //     const getQRCodes = async () => {
+    //         setLoading(true);
+    //         try {
+    //             const res = await historyApi.getQRCodes(qrcodeId)
+    //             if (res) {
+    //                 setQRCodes(res);
+    //             }
+    //             setLoading(false)
+    //         } catch (e) {
+    //             console.log('fail to get qrcodes ', e);
+    //         }
+    //     }
 
-        getQRCodes();
-    }, [])
-
-    console.log(qrcodes);
+    //     getQRCodes();
+    // }, [])
 
     return (
         <ScrollView style={{ flex: 1 }}>
@@ -39,7 +37,7 @@ const ClassroomAttendanced = ({ qrcodeId }) => {
                 />
             }
             {
-                qrcodes ?
+                qrcodes.length !== 0 ?
                     qrcodes.map(qrcode => (
                         <View
                             key={qrcode._id}
@@ -49,7 +47,7 @@ const ClassroomAttendanced = ({ qrcodeId }) => {
                             <View style={{flexDirection: 'row', alignItems: 'center'}}>
                                 <Text>Lớp </Text>
                                 <Chip
-                                    style={{ backgroundColor: '#235789' }}
+                                    style={styles.orangeBg}
                                 >
                                     <Subheading style={{ color: '#fff' }}>{qrcode.user.classroom.name}</Subheading>
                                 </Chip>
@@ -69,10 +67,62 @@ const ClassroomAttendanced = ({ qrcodeId }) => {
 
                     ))
                     :
-                    <Text>Chưa có sinh viên điểm danh</Text>
+                    <Text h4>Chưa có sinh viên điểm danh</Text>
             }
         </ScrollView>
     )
 };
 
 export default ClassroomAttendanced;
+
+const styles = StyleSheet.create({
+    row: {
+        flex: .30,
+        flexDirection: 'row',
+        justifyContent: 'center'
+    },
+    flex_left: {
+        flex: 1,
+        justifyContent: 'space-around',
+        alignItems: 'flex-start',
+    },
+    justify_center: {
+        justifyContent: "center"
+    },
+    box_shadow: {
+        width: '100%',
+        borderRadius: 10,
+        justifyContent: 'center',
+        padding: 20,
+
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.23,
+        shadowRadius: 2.62,
+        elevation: 2,
+    },
+    background_img: {
+        width: '100%',
+        height: 100,
+        marginBottom: 10,
+        padding: 15
+    },
+    redBg: {
+        backgroundColor: "#f3425f"
+    },
+    blueBg: {
+        backgroundColor: "#1878f3"
+    },
+    greenBg: {
+        backgroundColor: "#45bd63"
+    },
+    yellowBg: {
+        backgroundColor: "#f7b928"
+    },
+    orangeBg: {
+        backgroundColor: "#EF6306"
+    },
+})

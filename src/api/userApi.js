@@ -5,6 +5,10 @@ const userApi = {
         const url = '/users';
         return axiosClient.get(url, {params});
     },
+    getByClasses: (body) => {
+        const url = '/users/classes';
+        return axiosClient.post(url, body);
+    },
     getDetail: (token) => {
         const url = '/users/me';
         return axiosClient.get(url, {
