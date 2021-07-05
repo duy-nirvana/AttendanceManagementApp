@@ -35,6 +35,7 @@ const ClassroomDetail = ({ route: { params }, navigation }) => {
     const headerHeight = useHeaderHeight();
     const [users, setUsers] = useState([]);
     const [qrcodes, setQRCodes] = useState([]);
+    const [notAttendanceLength, setNotAttendanceLength] = useState(0);
 
     const layout = useWindowDimensions();
 
@@ -58,16 +59,16 @@ const ClassroomDetail = ({ route: { params }, navigation }) => {
         }
 
         getQRCodes();
-    }, [qrcodes])
+    }, [qrcodes]);
 
     const allClasses = qrcode.classes.map(classroom => classroom._id);
 
     const renderScene = ({ route }) => {
         switch (route.key) {
             case 'first':
-                return <ClassroomAttendanced  qrcodes={qrcodes} />;
+                return <ClassroomAttendanced qrcodes={qrcodes} />;
             case 'second':
-                return <ClassroomNotAttendanced classes={allClasses} usersAttendance={qrcodes} />;
+                return <ClassroomNotAttendanced classes={allClasses} usersAttendance={qrcodes} setNotAttendanceLength={setNotAttendanceLength} />;
             default:
                 return null;
         }
@@ -79,17 +80,24 @@ const ClassroomDetail = ({ route: { params }, navigation }) => {
         >
 
             <View style={[styles.box_shadow, styles.blueBg, { borderBottomRightRadius: 0, borderBottomLeftRadius: 0 }]} >
-                <View style={{ backgroundColor: '#235789', textAlign: 'center', padding: 10, alignSelf: 'center', borderRadius: 10 }}>
-                    <Text h4 style={{ color: "white" }}>
-                        {qrcode.subject[0].name}
-                    </Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <View>
+                        <Text h4 style={styles.title}>{qrcode.subject[0].name}</Text>
+                    </View>
+                    {
+                        qrcode.isOutOfDate ?
+                            <View style={[styles.redBg, { borderRadius: 10, width: 20, height: 20 }]}></View>
+                            :
+                            <View style={[styles.greenBg, { borderRadius: 10, width: 20, height: 20 }]}></View>
+                    }
                 </View>
-                <View style={{ flexWrap: 'wrap', flexDirection: "row", marginBottom: 10 }}>
+
+                <View style={{ flexWrap: 'wrap', flexDirection: "row", marginBottom: 5 }}>
                     {
                         qrcode.classes.map(classroom => (
                             <Chip
                                 key={classroom._id}
-                                style={[ styles.orangeBg, { marginRight: 5, marginTop: 5 }]}
+                                style={[styles.orangeBg, { marginRight: 5, marginTop: 5 }]}
                             >
                                 <Subheading style={{ color: '#fff' }}>{classroom.name}</Subheading>
                             </Chip>
@@ -97,22 +105,31 @@ const ClassroomDetail = ({ route: { params }, navigation }) => {
                     }
                 </View>
                 <Text h4 style={{ color: "white", lineHeight: 40 }}>
-                    {
-                        qrcode.isOutOfDate ?
-                            <Chip style={styles.redBg}>
-                                <Subheading style={{ color: '#fff' }}>Mã đã hết hạn</Subheading>
-                            </Chip>
-                            :
-                            <Chip style={styles.greenBg}>
-                                <Subheading style={{ color: '#fff' }}>Còn hạn sử dụng</Subheading>
-                            </Chip
-                            >}
-                </Text>
-                <Text h4 style={{ color: "white", lineHeight: 40 }}>
                     {moment(qrcode.createdAt).tz('Asia/Ho_Chi_Minh').format('HH:mm:s - dddd DD/MM/YYYY')}
                 </Text>
+
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <Text h4 style={{ color: 'white' }} >
+                        Điểm danh: {''}
+                        {
+                            qrcodes.length ?
+                                qrcodes.length
+                                :
+                                null
+                        }
+                    </Text>
+                    <Text h4 style={{ color: 'white' }} >
+                        Vắng: {''}
+                        {
+                            notAttendanceLength ?
+                                notAttendanceLength
+                                :
+                                null
+                        }
+                    </Text>
+                </View>
             </View>
-             <TabView
+            <TabView
                 renderTabBar={renderTabBar}
                 navigationState={{ index, routes }}
                 renderScene={renderScene}
@@ -139,6 +156,14 @@ const styles = StyleSheet.create({
     },
     justify_center: {
         justifyContent: "center"
+    },
+    title: {
+        backgroundColor: '#235789',
+        padding: 8,
+        alignSelf: 'center',
+        borderRadius: 30,
+        color: 'white',
+        marginBottom: 5
     },
     box_shadow: {
         width: '100%',

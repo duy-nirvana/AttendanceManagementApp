@@ -1,12 +1,11 @@
-import moment from 'moment-timezone';
 import 'moment/locale/vi';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View, Modal, StyleSheet } from 'react-native';
-import { Text, Icon } from 'react-native-elements';
-import { ActivityIndicator, Chip, Divider, Subheading, } from 'react-native-paper';
+import { FlatList, SafeAreaView, StyleSheet, View } from 'react-native';
+import { Text } from 'react-native-elements';
+import { ActivityIndicator, Chip, Subheading } from 'react-native-paper';
 import userApi from '../../../api/userApi';
 
-const ClassroomNotAttendanced = ({ classes, usersAttendance }) => {
+const ClassroomNotAttendanced = ({ classes, usersAttendance, setNotAttendanceLength }) => {
     const [isLoading, setLoading] = useState(false);
     const [users, setUsers] = useState([]);
     const [usersNotAttendance, setUsersNotAttendance] = useState([]);
@@ -34,46 +33,54 @@ const ClassroomNotAttendanced = ({ classes, usersAttendance }) => {
             })
 
             setUsersNotAttendance(filterUserNotAtteandance);
+            setNotAttendanceLength(usersNotAttendance.length);
         }
 
         filterNotAttendanceUsers();
     }, [usersAttendance])
 
+    const renderItem = ({ item }) => {
+
+        return (
+            <View
+                style={{ padding: 10 }}
+            >
+                <Text h4>{item.fullName}</Text>
+                <Text>MSSV: {item.codeNumber}</Text>
+
+
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text>Lớp </Text>
+                    <Chip
+                        key={item._id}
+                        style={[styles.orangeBg, { marginRight: 5, marginTop: 5 }]}
+                    >
+                        <Subheading style={{ color: '#fff' }}>{item.classroom.name}</Subheading>
+                    </Chip>
+                </View>
+
+            </View>
+        );
+    };
+
     return (
         <>
-            <ScrollView style={{ flex: 1 }}>
+            <SafeAreaView style={{ flex: 1 }}>
 
                 {
                     usersNotAttendance.length !== 0 ?
-                        usersNotAttendance.map(user => (
-                            <View
-                                key={user._id}
-                                style={{ padding: 10 }}
-                            >
-                                <Text h1>{user.fullName}</Text>
-                                <Text>MSSV: {user.codeNumber}</Text>
-
-
-                                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                    <Text>Lớp </Text>
-                                    <Chip
-                                        key={user._id}
-                                        style={[styles.orangeBg, { marginRight: 5, marginTop: 5 }]}
-                                    >
-                                        <Subheading style={{ color: '#fff' }}>{user.classroom.name}</Subheading>
-                                    </Chip>
-                                </View>
-
-                            </View>
-
-                        ))
+                        <FlatList
+                            data={usersNotAttendance}
+                            renderItem={renderItem}
+                            keyExtractor={(user) => user._id}
+                        />
                         :
                         <ActivityIndicator
                             animating={true}
                             color="#000"
                         />
                 }
-            </ScrollView>
+            </SafeAreaView>
         </>
     )
 };

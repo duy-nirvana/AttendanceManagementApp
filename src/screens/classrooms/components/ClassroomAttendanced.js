@@ -43,7 +43,7 @@ const ClassroomAttendanced = ({ qrcodes }) => {
                             key={qrcode._id}
                             style={{ padding: 10 }}
                         >
-                            <Subheading>{qrcode.user.fullName}</Subheading>
+                            <Text h4>{qrcode.user.fullName}</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center'}}>
                                 <Text>Lớp </Text>
                                 <Chip

@@ -1,12 +1,11 @@
+import { useHeaderHeight } from '@react-navigation/stack';
 import moment from 'moment-timezone';
 import 'moment/locale/vi';
 import React, { useEffect, useState } from 'react';
-import { TouchableOpacity, Text, Dimensions, ScrollView, View, Modal, StyleSheet } from 'react-native';
-import { ActivityIndicator, Button, Chip, Divider, Subheading, TextInput, Title, Switch } from 'react-native-paper';
+import { Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View, SafeAreaView, FlatList } from 'react-native';
+import { ActivityIndicator, Chip, Divider, Subheading, Title } from 'react-native-paper';
 import { useSelector } from 'react-redux';
-import slugify from 'slugify';
 import qrcodeApi from '../../api/qrcodeApi';
-import { useHeaderHeight } from '@react-navigation/stack';
 
 const fullWidth = Dimensions.get("screen").width;
 
@@ -33,11 +32,71 @@ const ClassroomScreen = (props) => {
         }
 
         fetchQRCodes();
-    }, [])
+    }, []);
+
+    const renderItem = ({ item }) => {
+
+        return (
+            <TouchableOpacity
+                key={item._id}
+                style={{ padding: 10 }}
+                onPress={() => navigation.navigate('ClassroomDetail', {
+                    qrcode: item
+                })}
+            >
+                <View>
+                    {
+                        item.subject.map(subject => (
+                            <Title
+                                key={subject._id}
+                                style={{ marginBottom: 5 }}
+                            >
+                                {subject.name}
+                            </Title>
+                        ))
+                    }
+                    <View style={{ flexWrap: 'wrap', flexDirection: "row", marginBottom: 15 }}>
+                        {
+                            item.classes.map(classes => (
+                                <Chip
+                                    key={classes._id}
+                                    style={{ backgroundColor: '#235789', marginRight: 5, marginTop: 5 }}
+                                >
+                                    <Subheading style={{ color: '#fff' }}>{classes.name}</Subheading>
+                                </Chip>
+                            ))
+                        }
+                    </View>
+                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                        {
+                            item.isOutOfDate ?
+                                <Chip style={styles.redBg}>
+                                    <Subheading style={{ color: '#fff' }}>Mã đã hết hạn</Subheading>
+                                </Chip>
+                                :
+                                <Chip style={styles.greenBg}>
+                                    <Subheading style={{ color: '#fff' }}>Còn hạn sử dụng</Subheading>
+                                </Chip>
+                        }
+                    </View>
+                    {
+                        item.description ?
+                            <Subheading>
+                                Chú thích: {item.description}
+                            </Subheading>
+                            :
+                            null
+                    }
+                    <Subheading>Ngày tạo mã: {moment(item.createdAt).tz('Asia/Ho_Chi_Minh').format('HH:mm:ss, dddd DD/MM/YYYY')}</Subheading>
+                    <Divider style={{ marginTop: 15 }} />
+                </View>
+            </TouchableOpacity>
+        )
+    }
 
     return (
         <View>
-            <ScrollView
+            <SafeAreaView
                 style={{ marginTop: headerHeight }}
             >
                 {isLoading &&
@@ -48,69 +107,17 @@ const ClassroomScreen = (props) => {
                 }
                 {
                     qrcodes.length !== 0 ?
-                        qrcodes.map(qrcode => (
-                            <TouchableOpacity
-                                key={qrcode._id}
-                                style={{ padding: 10 }}
-                                onPress={() => navigation.navigate('ClassroomDetail', {
-                                    qrcode
-                                })}
-                            >
-                                <View>
-                                    {
-                                        qrcode.subject.map(subject => (
-                                            <Title
-                                                key={subject._id}
-                                                style={{ marginBottom: 5 }}
-                                            >
-                                                {subject.name}
-                                            </Title>
-                                        ))
-                                    }
-                                    <View style={{ flexWrap: 'wrap', flexDirection: "row", marginBottom: 15 }}>
-                                        {
-                                            qrcode.classes.map(classes => (
-                                                <Chip
-                                                    key={classes._id}
-                                                    style={{ backgroundColor: '#235789', marginRight: 5, marginTop: 5 }}
-                                                >
-                                                    <Subheading style={{ color: '#fff' }}>{classes.name}</Subheading>
-                                                </Chip>
-                                            ))
-                                        }
-                                    </View>
-                                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                        {
-                                            qrcode.isOutOfDate ?
-                                                <Chip style={styles.redBg}>
-                                                    <Subheading style={{ color: '#fff' }}>Mã đã hết hạn</Subheading>
-                                                </Chip>
-                                                :
-                                                <Chip style={styles.greenBg}>
-                                                    <Subheading style={{ color: '#fff' }}>Còn hạn sử dụng</Subheading>
-                                                </Chip>
-                                        }
-                                    </View>
-                                    {
-                                        qrcode.description ?
-                                            <Subheading>
-                                                Chú thích: {qrcode.description}
-                                            </Subheading>
-                                            :
-                                            null
-                                    }
-                                    <Subheading>Ngày tạo mã: {moment(qrcode.createdAt).tz('Asia/Ho_Chi_Minh').format('HH:mm:ss, dddd DD/MM/YYYY')}</Subheading>
-                                    <Divider style={{ marginTop: 15 }} />
-                                </View>
-                            </TouchableOpacity>
+                        <FlatList
+                            data={qrcodes}
+                            renderItem={renderItem}
+                            keyExtractor={(qrcode) => qrcode._id}
+                        />
 
-
-                        ))
                         :
                         <Text></Text>
 
                 }
-            </ScrollView>
+            </SafeAreaView>
         </View>
     )
 }
