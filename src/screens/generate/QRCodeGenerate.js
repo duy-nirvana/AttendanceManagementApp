@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Modal, Text, Dimensions, StyleSheet, StatusBar, SafeAreaView, Alert, ScrollView, LogBox} from 'react-native';
 import { Button, ActivityIndicator, TextInput} from 'react-native-paper';
 import QRCode from 'react-native-qrcode-svg';
@@ -10,6 +10,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 import MultiSelect from 'react-native-multiple-select';
 import {Picker} from '@react-native-picker/picker';
+import Toast from 'react-native-simple-toast';
 import { useSelector } from 'react-redux';
 import { FlatList } from 'react-native-gesture-handler';
 
@@ -27,7 +28,7 @@ const QRCodeGenerate = (props) => {
     const [infoQRCode, setInfoQRCode] = useState('');
     const [descriptionQRCode, setDescriptionQRCode] = useState('');
     const [isLoading, setLoading] = useState(false);
-    
+
     const stringQRCode = {
         classes: selectedClasses,
         subject: selectedSubject,
@@ -48,7 +49,7 @@ const QRCodeGenerate = (props) => {
                 ],
                 { cancelable: false }
             );
-        } 
+        }
 
         if (stringQRCode.subject.length === 0) {
             Alert.alert(
@@ -61,14 +62,14 @@ const QRCodeGenerate = (props) => {
                 ],
                 { cancelable: false }
             );
-        } 
+        }
 
         if (stringQRCode.classes.length > 0 && stringQRCode.subject.length > 0) {
             verifyCreateQRCode();
         }
-        
+
     }
-    
+
     const verifyCreateQRCode = () => {
         Alert.alert(
             "QRCODE",
@@ -96,7 +97,7 @@ const QRCodeGenerate = (props) => {
             { cancelable: false }
         );
     }
-    
+
     useEffect(() => {
         const fetchClasses = async () => {
             try {
@@ -112,7 +113,7 @@ const QRCodeGenerate = (props) => {
                 setSubject(res);
             } catch (err) {
                 console.log('fail to fetch data subject', err);
-            } 
+            }
         }
 
         fetchClasses();
@@ -123,6 +124,18 @@ const QRCodeGenerate = (props) => {
         LogBox.ignoreAllLogs();
     }, [])
 
+    // const convertSubject = (subjectId) => {
+    //     return subject.filter(sub => {
+    //         return sub._id === subjectId
+    //     }).map(sub => {
+    //         return sub.name;
+    //     })
+    // }
+
+    // const sendQRToMail = {
+
+    // }
+
     const generateQRCode = () => {
         try {
             setLoading(true);
@@ -132,6 +145,16 @@ const QRCodeGenerate = (props) => {
                 setInfoQRCode(data._id);
                 setSettingQRCode(true);
                 qrcodeApi.updateById(data._id);
+                subjectApi.getById(selectedSubject).then((sub) => {
+                    qrcodeApi.sendMail({
+                        subject: sub.name,
+                        mail: profileUser.email,
+                        qrcode: data._id
+                    })
+                    .then(() => {
+                        Toast.show(`Mã QR đã được gửi tới email của bạn`, Toast.LONG);
+                    })
+                })
             })
         } catch (error) {
             setLoading(false);
@@ -141,14 +164,13 @@ const QRCodeGenerate = (props) => {
 
     return (
         <ScrollView style={{flex: 1}}>
-                <SafeAreaView style={{flex:1, alignItems: "center"}}>
+                <SafeAreaView style={{flex:1, alignItems: "center", backgroundColor: 'white'}}>
                     <View style={{flex: 1, marginLeft: 20, marginRight: 20}}>
                         <Text style={{marginBottom: 5, marginTop: 20, textAlign: 'center'}}>LỚP HỌC</Text>
                         <MultiSelect
                             items={classes}
                             uniqueKey="_id"
-                            //ref={(component) => { multiSelect = component }}
-                            onSelectedItemsChange={(item) => setSelectedClasses(item)}
+                            onSelectedItemsChange={setSelectedClasses}
                             selectedItems={selectedClasses}
                             selectText="Chọn lớp học"
                             searchInputPlaceholderText="Tìm lớp học..."
@@ -171,7 +193,7 @@ const QRCodeGenerate = (props) => {
                             items={subject}
                             uniqueKey="_id"
                             //ref={(component) => { multiSelect = component }}
-                            onSelectedItemsChange={(item) => setSelectedSubject(item)}
+                            onSelectedItemsChange={setSelectedSubject}
                             selectedItems={selectedSubject}
                             selectText="Chọn môn học"
                             searchInputPlaceholderText="Tìm môn học..."
@@ -208,26 +230,26 @@ const QRCodeGenerate = (props) => {
                             value={descriptionQRCode}
                             onChangeText={(value) => setDescriptionQRCode(value)}
                         />
-                        
-                        <Button 
-                            mode="outlined" 
-                            color="white" 
+
+                        <Button
+                            mode="outlined"
+                            color="white"
                             style={{width: fullWidth * .9,  backgroundColor: 'navy', padding: 10, marginTop: 30}}
                             onPress={checkInfoIsNotEmpty}
-                        > 
+                        >
                             Tạo mã QR Code
                         </Button>
                     </View>
 
-                        {   
+                        {
                         <Modal visible={hasSettingQRCode}
                         >
                             <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}} >
                                 {
-                                    isLoading ? 
-                                    <ActivityIndicator 
-                                        animating={true} 
-                                        color="#000" 
+                                    isLoading ?
+                                    <ActivityIndicator
+                                        animating={true}
+                                        color="#000"
                                     />
                                     :
                                     <QRCode
@@ -242,7 +264,7 @@ const QRCodeGenerate = (props) => {
                         </Modal>
                         }
                 </SafeAreaView>
-                
+
         </ScrollView>
     )
 }

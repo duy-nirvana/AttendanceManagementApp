@@ -17,6 +17,10 @@ const qrcodeApi = {
         const url = '/qrcode/create';
         return axiosClient.post(url, body);
     },
+    sendMail: (body) => {
+        const url = '/qrcode/send-mail';
+        return axiosClient.post(url, body);
+    },
     updateById: (id) => {
         const url = `/qrcode/${id}`;
         return axiosClient.patch(url, {id});

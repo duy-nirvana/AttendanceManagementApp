@@ -50,8 +50,8 @@ function HomeScreen({ navigation }) {
                 source={background}
                 style={[styles.background_img, styles.justify_center]}
             >
-                <Text h1 style={{ color: "white" }}>
-                    Home
+                <Text h3 style={{ color: "white" }}>
+                    iRollCall - Điểm danh mã QR
                 </Text>
             </Image>
             <View style={styles.row}>
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
     },
     background_img: {
         width: '100%',
-        height: 100,
+        height: 70,
         marginBottom: 10,
         padding: 15
     },

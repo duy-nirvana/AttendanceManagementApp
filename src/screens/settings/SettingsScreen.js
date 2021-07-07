@@ -44,18 +44,18 @@ function SettingsScreen({navigation}) {
     const handleSignOut = () => {
         dispatch({ type: 'SIGN_OUT' });
         AsyncStorage.removeItem('userToken');
-    } 
+    }
 
     return (
       <View style={{flex: 1}}>
         <Image
           source={background}
           style={[styles.background_img, styles.justify_center]}>
-          <Text h1 style={{color: 'white'}}>
-            Settings
+          <Text h3 style={{color: 'white'}}>
+            Cài đặt
           </Text>
         </Image>
-        
+
         <ScrollView style={{padding: 12}}>
                 <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', marginTop: 10, marginBottom: 10}}>
                     <Avatar
@@ -100,30 +100,30 @@ function SettingsScreen({navigation}) {
                     value={profileUser.email}
                     editable={false}
                 />
-                <Button 
-                    mode="outlined" 
-                    color="white" 
+                <Button
+                    mode="outlined"
+                    color="white"
                     style={[{padding: 20, marginTop: 10}, styles.yellowBg]}
                     onPress={
                         // () => handleOpenChangePassword(true)
                         () => navigation.navigate('UpdatePassword')
                     }
-                > 
+                >
                     ĐỔI MẬT KHẨU
                 </Button>
-                <Button 
-                    mode="outlined" 
-                    color="white" 
+                <Button
+                    mode="outlined"
+                    color="white"
                     style={[{padding: 20, marginTop: 10, marginBottom: 20}, styles.redBg]}
                     onPress={verifySignOut}
-                > 
+                >
                     ĐĂNG XUẤT
                 </Button>
                 <Modal
                     animationType="slide"
                     visible={hasOpenChangePassword}
-                >   
-                    <UpdatePassword 
+                >
+                    <UpdatePassword
                         handleOpenChangePassword={handleOpenChangePassword}
                         handleSignOut={handleSignOut}
                     />
@@ -135,13 +135,13 @@ function SettingsScreen({navigation}) {
 
 const styles = StyleSheet.create({
     row: {
-        flex: .35, 
-        flexDirection: 'row', 
+        flex: .35,
+        flexDirection: 'row',
         justifyContent: 'center'
     },
     flex_left: {
-        flex: 1, 
-        justifyContent: 'space-around', 
+        flex: 1,
+        justifyContent: 'space-around',
         alignItems: 'flex-start',
     },
     justify_center: {
@@ -149,11 +149,11 @@ const styles = StyleSheet.create({
     },
     align_center: {
         alignItems: "center"
-    },  
+    },
     box_shadow: {
-        width: '45%', 
+        width: '45%',
         margin: 5,
-        marginBottom: 10, 
+        marginBottom: 10,
         borderRadius: 10,
         padding: 15,
 
@@ -167,8 +167,8 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     background_img: {
-        width: '100%', 
-        height: 100, 
+        width: '100%',
+        height: 70,
         marginBottom: 10,
         padding: 15
     },
