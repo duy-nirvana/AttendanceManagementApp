@@ -30,7 +30,7 @@ const ScanScreen = () => {
 
     useEffect(() => {
         image1.bitmap = base64ImageAvatar.base64Avatar;
-        image1.type = Enum.eInputFaceType.ift_DocumentPrinted;
+        image1.imageType = Enum.eInputFaceType.ift_DocumentPrinted;
     }, [])
 
 
@@ -48,14 +48,17 @@ const ScanScreen = () => {
             const base64Image = await RNFS.readFile(data.uri, 'base64');
 
             image2.bitmap = base64Image;
-            image2.type = Enum.eInputFaceType.ift_DocumentPrinted;
-            await matchFaces()
+            image2.imageType = Enum.eInputFaceType.ift_DocumentPrinted;
+            matchFaces()
         }
     };
 
-    const matchFaces = async () => {
+
+    const matchFaces = () => {
         if (image1 == null || image1.bitmap == null || image1.bitmap == "" || image2 == null || image2.bitmap == null || image2.bitmap == "")
-            return
+        return
+        // console.log({image1})
+        // console.log({image2})
         setLoading(true);
         var request = new MatchFacesRequest()
         request.images = [image1, image2]
@@ -71,6 +74,18 @@ const ScanScreen = () => {
                 alert(`Nhận diện khuôn mặt thất bại!`);
             }
         }, e => { console.log(e) })
+
+        // if (image1 == null || image1.bitmap == null || image1.bitmap == "" || image2 == null || image2.bitmap == null || image2.bitmap == "")
+        //     return
+        // setText('loading ...')
+        // var request = new MatchFacesRequest()
+        // request.images = [image1, image2]
+        // Face.matchFaces(JSON.stringify(request), response => {
+        //     response = MatchFacesResponse.fromJson(JSON.parse(response))
+        //     var matchedFaces = response.matchedFaces
+        //     console.log({ response })
+        //     setText( matchedFaces.length > 0 ? ((matchedFaces[0].similarity * 100).toFixed(2) + "%") : "error" )
+        // }, e => setText(e) )
     };
 
     useEffect(() => {
@@ -150,78 +165,78 @@ const ScanScreen = () => {
     }, [qrcodeInfo])
 
     return (
-        <KeyboardAvoidingView style={{flex: 1}}>
+        <KeyboardAvoidingView style={{ flex: 1 }}>
 
-        <View style={{ flex: 1 }}>
-            <RNCamera
-                ref={isCamera}
-                style={[StyleSheet.absoluteFill]}
-                type={isFaceScan ? RNCamera.Constants.Type.back : RNCamera.Constants.Type.front}
-                androidCameraPermissionOptions={{
-                    title: 'Permission to use camera',
-                    message: 'We need your permission to use your camera',
-                    buttonPositive: 'Ok',
-                    buttonNegative: 'Cancel',
-                }}
-                onBarCodeRead={hasScanned ? undefined : (e) => handleBarCodeScanned(e)}
-                barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
-            >
-                {
-                    !isFaceScan ?
-                    <>
-                        <CircleMask />
-                        <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
-                            <View
-                                style={styles.loading}
-                            >
-                                {isLoading ? (
-                                    <Button
-                                        disabled
-                                        title="Scan"
-                                        type="clear"
-                                        loading={true}
-                                        loadingProps={{ size: 'large', color: 'white' }}
-                                    />
-                                ) : (
-                                    <View style={{ flex: 1 }}></View>
-                                )}
-                            </View>
-                            <TouchableOpacity onPress={() => takePicture()} style={styles.capture}>
-                                <Text style={{ fontSize: 14 }}>Nhận Diện</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </>
-                    :
-                    <>
-                        <RestangleMask />
-                        <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
-                            <View
-                                style={styles.loading}
-                            >
-                                {isLoading ? (
-                                    <Button
-                                        disabled
-                                        title="Scan"
-                                        type="clear"
-                                        loading={true}
-                                        loadingProps={{ size: 'large', color: 'white' }}
-                                    />
-                                ) : (
-                                    <View style={{ flex: 1 }}></View>
-                                )}
-                            </View>
-                            {
-                                hasScanned &&
-                                <TouchableOpacity onPress={() => setScanned(false)} style={styles.capture}>
-                                    <Text style={{ fontSize: 14 }}>Quét Mã</Text>
-                                </TouchableOpacity>
-                            }
-                        </View>
-                    </>
+            <View style={{ flex: 1 }}>
+                <RNCamera
+                    ref={isCamera}
+                    style={[StyleSheet.absoluteFill]}
+                    type={isFaceScan ? RNCamera.Constants.Type.back : RNCamera.Constants.Type.front}
+                    androidCameraPermissionOptions={{
+                        title: 'Permission to use camera',
+                        message: 'We need your permission to use your camera',
+                        buttonPositive: 'Ok',
+                        buttonNegative: 'Cancel',
+                    }}
+                    onBarCodeRead={hasScanned ? undefined : (e) => handleBarCodeScanned(e)}
+                    barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
+                >
+                    {
+                        !isFaceScan ?
+                            <>
+                                <CircleMask />
+                                <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
+                                    <View
+                                        style={styles.loading}
+                                    >
+                                        {isLoading ? (
+                                            <Button
+                                                disabled
+                                                title="Scan"
+                                                type="clear"
+                                                loading={true}
+                                                loadingProps={{ size: 'large', color: 'white' }}
+                                            />
+                                        ) : (
+                                            <View style={{ flex: 1 }}></View>
+                                        )}
+                                    </View>
+                                    <TouchableOpacity onPress={() => takePicture()} style={styles.capture}>
+                                        <Text style={{ fontSize: 14 }}>Nhận Diện</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </>
+                            :
+                            <>
+                                <RestangleMask />
+                                <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
+                                    <View
+                                        style={styles.loading}
+                                    >
+                                        {isLoading ? (
+                                            <Button
+                                                disabled
+                                                title="Scan"
+                                                type="clear"
+                                                loading={true}
+                                                loadingProps={{ size: 'large', color: 'white' }}
+                                            />
+                                        ) : (
+                                            <View style={{ flex: 1 }}></View>
+                                        )}
+                                    </View>
+                                    {
+                                        hasScanned &&
+                                        <TouchableOpacity onPress={() => setScanned(false)} style={styles.capture}>
+                                            <Text style={{ fontSize: 14 }}>Quét Mã</Text>
+                                        </TouchableOpacity>
+                                    }
+                                </View>
+                            </>
 
-                }
-            </RNCamera>
-        </View>
+                    }
+                </RNCamera>
+            </View>
         </KeyboardAvoidingView>
 
     );

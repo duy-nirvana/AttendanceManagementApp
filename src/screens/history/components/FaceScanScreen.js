@@ -20,7 +20,7 @@ const FaceScanScreen = ({ route: { params }, navigation }) => {
 
     useEffect(() => {
         image1.bitmap = base64ImageAvatar.base64Avatar;
-        image1.type = Enum.eInputFaceType.ift_DocumentPrinted;
+        image1.imageType = Enum.eInputFaceType.ift_DocumentPrinted;
     }, [])
 
     const takePicture = async () => {
@@ -31,7 +31,7 @@ const FaceScanScreen = ({ route: { params }, navigation }) => {
             const base64Image = await RNFS.readFile(data.uri, 'base64');
 
             image2.bitmap = base64Image;
-            image2.type = Enum.eInputFaceType.ift_DocumentPrinted;
+            image2.imageType = Enum.eInputFaceType.ift_DocumentPrinted;
             await matchFaces()
         }
     };
