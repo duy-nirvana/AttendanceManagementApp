@@ -102,7 +102,8 @@ const QRCodeGenerate = (props) => {
         const fetchClasses = async () => {
             try {
                 const res = await classApi.getAll();
-                setClasses(res);
+                const filterClasses = res.filter(classes => classes.name !== 'HUTECH')
+                setClasses(filterClasses);
             } catch (err) {
                 console.log('fail to fetch data classes', err);
             }
