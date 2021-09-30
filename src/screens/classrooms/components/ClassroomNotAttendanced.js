@@ -5,84 +5,90 @@ import { Text } from 'react-native-elements';
 import { ActivityIndicator, Chip, Subheading } from 'react-native-paper';
 import userApi from '../../../api/userApi';
 
-const ClassroomNotAttendanced = ({ classes, usersAttendance, setNotAttendanceLength }) => {
+const ClassroomNotAttendanced = ({ users }) => {
     const [isLoading, setLoading] = useState(false);
-    const [users, setUsers] = useState([]);
-    const [usersNotAttendance, setUsersNotAttendance] = useState([]);
 
-    useEffect(() => {
-        const getUserByClasses = async () => {
-            try {
-                const res = await userApi.getByClasses({ classes });
-                setUsers(res);
-            } catch (error) {
-                console.log('can not get users');
-            };
-        }
 
-        getUserByClasses();
-    }, [])
+    // useEffect(() => {
+    //     const getUserByClasses = async () => {
+    //         try {
+    //             const res = await userApi.getByClasses({ classes });
+    //             setUsers(res);
+    //         } catch (error) {
+    //             console.log('can not get users');
+    //         };
+    //     }
 
-    useEffect(() => {
-        const filterNotAttendanceUsers = async () => {
-            // if (usersAttendance.length === 0) return;
-            const usersAttendanceIDs = await usersAttendance.map(user => user.user._id);
+    //     getUserByClasses();
+    // }, [])
 
-            const filterUserNotAtteandance = users.filter(user => {
-                return usersAttendanceIDs.indexOf(user._id) === -1 && user.roles !== 'moderator';
-            })
+    // useEffect(() => {
+    //     const filterNotAttendanceUsers = async () => {
+    //         // if (usersAttendance.length === 0) return;
+    //         const usersAttendanceIDs = await usersAttendance.map(user => user.user._id);
 
-            setUsersNotAttendance(filterUserNotAtteandance);
-            setNotAttendanceLength(usersNotAttendance.length);
-        }
+    //         const filterUserNotAtteandance = users.filter(user => {
+    //             return usersAttendanceIDs.indexOf(user._id) === -1 && user.roles !== 'moderator';
+    //         })
 
-        filterNotAttendanceUsers();
-    }, [usersAttendance])
+    //         setUsersNotAttendance(filterUserNotAtteandance);
+    //         setNotAttendanceLength(usersNotAttendance.length);
+    //     }
 
-    const renderItem = ({ item }) => {
+    //     filterNotAttendanceUsers();
+    // }, [usersAttendance])
+
+//     const renderItem = ({ item }) => {
 
         return (
-            <View
-                style={{ padding: 10 }}
-            >
-                <Text h4>{item.fullName}</Text>
-                <Text>MSSV: {item.codeNumber}</Text>
-
-
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text>Lớp </Text>
-                    <Chip
-                        key={item._id}
-                        style={[styles.orangeBg, { marginRight: 5, marginTop: 5 }]}
-                    >
-                        <Subheading style={{ color: '#fff' }}>{item.classroom.name}</Subheading>
-                    </Chip>
-                </View>
-
+            <View>
+                {users.map(user => ((
+                    <Text>{user.fullName}</Text>
+                )))}
             </View>
-        );
-    };
+        )
+//         return (
+//             <View
+//                 style={{ padding: 10 }}
+//             >
+//                 <Text h4>{item.fullName}</Text>
+//                 <Text>MSSV: {item.codeNumber}</Text>
 
-    return (
-        <>
-            <SafeAreaView style={{ flex: 1 }}>
 
-                {
-                    usersNotAttendance.length !== 0 ?
-                        <FlatList
-                            data={usersNotAttendance}
-                            renderItem={renderItem}
-                            keyExtractor={(user) => user._id}
-                        />
-                        :
-                        <ActivityIndicator
-                            animating={true}
-                            color="#000"
-                        />
-                }
-            </SafeAreaView>
-        </>
-    )
+//                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+//                     <Text>Lớp </Text>
+//                     <Chip
+//                         key={item._id}
+//                         style={[styles.orangeBg, { marginRight: 5, marginTop: 5 }]}
+//                     >
+//                         <Subheading style={{ color: '#fff' }}>{item.classroom.name}</Subheading>
+//                     </Chip>
+//                 </View>
+
+//             </View>
+//         );
+//     };
+
+//     return (
+//         <>
+//             <SafeAreaView style={{ flex: 1 }}>
+
+//                 {
+//                     usersNotAttendance.length !== 0 ?
+//                         <FlatList
+//                             data={usersNotAttendance}
+//                             renderItem={renderItem}
+//                             keyExtractor={(user) => user._id}
+//                         />
+//                         :
+//                         <ActivityIndicator
+//                             animating={true}
+//                             color="#000"
+//                         />
+//                 }
+//             </SafeAreaView>
+//         </>
+//     )
 };
 
 export default ClassroomNotAttendanced;

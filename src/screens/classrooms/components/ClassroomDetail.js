@@ -11,6 +11,7 @@ import { useHeaderHeight } from '@react-navigation/stack';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import ClassroomAttendanced from './ClassroomAttendanced';
 import ClassroomNotAttendanced from './ClassroomNotAttendanced';
+import qrcodeApi from '../../../api/qrcodeApi';
 
 
 const fullWidth = Dimensions.get("screen").width;
@@ -37,6 +38,9 @@ const ClassroomDetail = ({ route: { params }, navigation }) => {
     const [qrcodes, setQRCodes] = useState([]);
     const [notAttendanceLength, setNotAttendanceLength] = useState(0);
 
+    const [usersAttendance, setUsersAttendance] = useState([]);
+    const [usersNotAttendance, setUsersNotAttendance] = useState([]);
+
     const layout = useWindowDimensions();
 
     const [index, setIndex] = useState(0);
@@ -46,89 +50,84 @@ const ClassroomDetail = ({ route: { params }, navigation }) => {
     ]);
 
     useEffect(() => {
-        const getQRCodes = async () => {
+        const getDetailQRCode = async () => {
             setLoading(true);
             try {
-                const res = await historyApi.getQRCodes(qrcode._id)
+                const res = await qrcodeApi.getById(qrcode._id)
                 if (res) {
-                    setQRCodes(res);
+                    setUsersAttendance(res.attendance_user);
+                    setUsersNotAttendance(res.not_attendance_user);
                 }
             } catch (e) {
                 console.log('fail to get qrcodes ', e);
             }
         }
 
-        getQRCodes();
-    }, [qrcodes]);
+        getDetailQRCode();
+    }, []);
 
     const allClasses = qrcode.classes.map(classroom => classroom._id);
 
     const renderScene = ({ route }) => {
         switch (route.key) {
             case 'first':
-                return <ClassroomAttendanced qrcodes={qrcodes} />;
+                return <ClassroomAttendanced users={usersAttendance} />;
             case 'second':
-                return <ClassroomNotAttendanced classes={allClasses} usersAttendance={qrcodes} setNotAttendanceLength={setNotAttendanceLength} />;
+                return <ClassroomNotAttendanced users={usersNotAttendance} />;
             default:
                 return null;
         }
     }
 
     return (
-        <View
-            style={{ flex: 1, justifyContent: 'space-between', marginTop: headerHeight, padding: 10 }}
-        >
+        // <View
+        //     style={{ flex: 1, justifyContent: 'space-between', marginTop: headerHeight, padding: 10 }}
+        // >
 
-            <View style={[styles.box_shadow, styles.blueBg, { borderBottomRightRadius: 0, borderBottomLeftRadius: 0 }]} >
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <View>
-                        <Text h4 style={styles.title}>{qrcode.subject[0].name}</Text>
-                    </View>
-                    {
-                        qrcode.isOutOfDate ?
-                            <View style={[styles.redBg, { borderRadius: 10, width: 20, height: 20 }]}></View>
-                            :
-                            <View style={[styles.greenBg, { borderRadius: 10, width: 20, height: 20 }]}></View>
-                    }
-                </View>
+        //     <View style={[styles.box_shadow, styles.blueBg, { borderBottomRightRadius: 0, borderBottomLeftRadius: 0 }]} >
+        //         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+        //             <View>
+        //                 <Text h4 style={styles.title}>{qrcode.subject[0].name}</Text>
+        //             </View>
+        //             {
+        //                 qrcode.isOutOfDate ?
+        //                     <View style={[styles.redBg, { borderRadius: 10, width: 20, height: 20 }]}></View>
+        //                     :
+        //                     <View style={[styles.greenBg, { borderRadius: 10, width: 20, height: 20 }]}></View>
+        //             }
+        //         </View>
 
-                <View style={{ flexWrap: 'wrap', flexDirection: "row", marginBottom: 5 }}>
-                    {
-                        qrcode.classes.map(classroom => (
-                            <Chip
-                                key={classroom._id}
-                                style={[styles.orangeBg, { marginRight: 5, marginTop: 5 }]}
-                            >
-                                <Subheading style={{ color: '#fff' }}>{classroom.name}</Subheading>
-                            </Chip>
-                        ))
-                    }
-                </View>
-                <Text h4 style={{ color: "white", lineHeight: 40 }}>
-                    {moment(qrcode.createdAt).tz('Asia/Ho_Chi_Minh').format('HH:mm:s - dddd DD/MM/YYYY')}
-                </Text>
+        //         <View style={{ flexWrap: 'wrap', flexDirection: "row", marginBottom: 5 }}>
+        //             {
+        //                 qrcode.classes.map(classroom => (
+        //                     <Chip
+        //                         key={classroom._id}
+        //                         style={[styles.orangeBg, { marginRight: 5, marginTop: 5 }]}
+        //                     >
+        //                         <Subheading style={{ color: '#fff' }}>{classroom.name}</Subheading>
+        //                     </Chip>
+        //                 ))
+        //             }
+        //         </View>
+        //         <Text h4 style={{ color: "white", lineHeight: 40 }}>
+        //             {moment(qrcode.createdAt).tz('Asia/Ho_Chi_Minh').format('HH:mm:s - dddd DD/MM/YYYY')}
+        //         </Text>
 
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <Text h4 style={{ color: 'white' }} >
-                        Điểm danh: {''}
-                        {
-                            qrcodes.length ?
-                                qrcodes.length
-                                :
-                                null
-                        }
-                    </Text>
-                    <Text h4 style={{ color: 'white' }} >
-                        Vắng: {''}
-                        {
-                            notAttendanceLength ?
-                                notAttendanceLength
-                                :
-                                null
-                        }
-                    </Text>
-                </View>
-            </View>
+        //         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+        //             <Text h4 style={{ color: 'white' }} >
+        //                 Điểm danh: {''}
+        //                 {
+        //                     qrcode.attendance_user.length
+        //                 }
+        //             </Text>
+        //             <Text h4 style={{ color: 'white' }} >
+        //                 Vắng: {''}
+        //                 {
+        //                     qrcode.not_attendance_user.length
+        //                 }
+        //             </Text>
+        //         </View>
+        //     </View>
             <TabView
                 renderTabBar={renderTabBar}
                 navigationState={{ index, routes }}
@@ -137,7 +136,7 @@ const ClassroomDetail = ({ route: { params }, navigation }) => {
                 initialLayout={{ width: layout.width }}
                 style={{ height: fullHeight }}
             />
-        </View>
+        // </View>
     )
 }
 

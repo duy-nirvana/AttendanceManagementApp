@@ -33,7 +33,7 @@ const QRCodeGenerate = (props) => {
         classes: selectedClasses,
         subject: selectedSubject,
         time: selectedTime,
-        user: profileUser._id,
+        owner: profileUser._id,
         description: descriptionQRCode
     }
 
@@ -225,6 +225,8 @@ const QRCodeGenerate = (props) => {
 
                         <Text style={{marginBottom: 5, marginTop: 20, textAlign: 'center'}}>MÔ TẢ</Text>
                         <TextInput
+                            multiline={true}
+                            numberOfLines={4}
                             mode="outlined"
                             theme={{ colors: { primary: 'black', underlineColor:'transparent' }}}
                             style={{width: fullWidth * 0.9, marginBottom: 15}}

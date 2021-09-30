@@ -7,7 +7,7 @@ import { ActivityIndicator, Chip, Divider, Subheading } from 'react-native-paper
 
 import historyApi from '../../../api/historyApi';
 
-const ClassroomAttendanced = ({ qrcodes }) => {
+const ClassroomAttendanced = ({ users }) => {
     const [isLoading, setLoading] = useState(false);
     // const [qrcodes, setQRCodes] = useState([]);
 
@@ -29,48 +29,55 @@ const ClassroomAttendanced = ({ qrcodes }) => {
     // }, [])
 
     return (
-        <ScrollView style={{ flex: 1 }}>
-            {isLoading &&
-                <ActivityIndicator
-                    animating={true}
-                    color="#000"
-                />
-            }
-            {
-                qrcodes.length !== 0 ?
-                    qrcodes.map(qrcode => (
-                        <View
-                            key={qrcode._id}
-                            style={{ padding: 10 }}
-                        >
-                            <Text h4>{qrcode.user.fullName}</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                <Text>Lớp </Text>
-                                <Chip
-                                    style={styles.orangeBg}
-                                >
-                                    <Subheading style={{ color: '#fff' }}>{qrcode.user.classroom.name}</Subheading>
-                                </Chip>
-                            </View>
-                            {/* <View style={{ flexWrap: 'wrap', flexDirection: "row", marginBottom: 5 }}>
-
-                            </View>
-                            {
-                                qrcode.qrcode.description ?
-                                    <Subheading>Chú thích: {qrcode.qrcode.description}</Subheading>
-                                    : null
-                            }
-                            */}
-                            <Subheading>Thời gian: {moment(qrcode.createdAt).tz('Asia/Ho_Chi_Minh').format('HH:mm:ss, dddd DD/MM/YYYY')}</Subheading>
-                            <Divider style={{ marginTop: 15 }} />
-                        </View>
-
-                    ))
-                    :
-                    <Text h4>Chưa có sinh viên điểm danh</Text>
-            }
-        </ScrollView>
+        <View>
+            {users.map(user => ((
+                <Text>{user.fullName}</Text>
+            )))}
+        </View>
     )
+    // (
+        // <ScrollView style={{ flex: 1 }}>
+        //     {isLoading &&
+        //         <ActivityIndicator
+        //             animating={true}
+        //             color="#000"
+        //         />
+        //     }
+        //     {
+        //         qrcodes.length !== 0 ?
+        //             qrcodes.map(qrcode => (
+        //                 <View
+        //                     key={qrcode._id}
+        //                     style={{ padding: 10 }}
+        //                 >
+        //                     <Text h4>{qrcode.user.fullName}</Text>
+        //                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        //                         <Text>Lớp </Text>
+        //                         <Chip
+        //                             style={styles.orangeBg}
+        //                         >
+        //                             <Subheading style={{ color: '#fff' }}>{qrcode.user.classroom.name}</Subheading>
+        //                         </Chip>
+        //                     </View>
+        //                     {/* <View style={{ flexWrap: 'wrap', flexDirection: "row", marginBottom: 5 }}>
+
+        //                     </View>
+        //                     {
+        //                         qrcode.qrcode.description ?
+        //                             <Subheading>Chú thích: {qrcode.qrcode.description}</Subheading>
+        //                             : null
+        //                     }
+        //                     */}
+        //                     <Subheading>Thời gian: {moment(qrcode.createdAt).tz('Asia/Ho_Chi_Minh').format('HH:mm:ss, dddd DD/MM/YYYY')}</Subheading>
+        //                     <Divider style={{ marginTop: 15 }} />
+        //                 </View>
+
+        //             ))
+        //             :
+        //             <Text h4>Chưa có sinh viên điểm danh</Text>
+        //     }
+        // </ScrollView>
+    // )
 };
 
 export default ClassroomAttendanced;
