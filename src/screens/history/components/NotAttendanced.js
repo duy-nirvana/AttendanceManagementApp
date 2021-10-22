@@ -8,21 +8,21 @@ import { ActivityIndicator, Chip, Divider, Subheading, } from 'react-native-pape
 const NotAttendanced = ({ qrcodes, subjects, navigation }) => {
     const [isLoading, setLoading] = useState(false);
 
-    const filterQRCode = () => {
-        const qrcodeSubjectID = subjects.map((sub) => sub.qrcode.subject._id);
-        const subjectIDs = subjects.map((sub) => sub.qrcode._id);
+    // const filterQRCode = () => {
+    //     const qrcodeSubjectID = subjects.map((sub) => sub.qrcode.subject._id);
+    //     const subjectIDs = subjects.map((sub) => sub.qrcode._id);
 
-        const qrcodesFiltered = qrcodes.filter(qrcode => {
-            return qrcodeSubjectID.indexOf(qrcode.subject[0]._id) !== -1;
-        })
+    //     const qrcodesFiltered = qrcodes.filter(qrcode => {
+    //         return qrcodeSubjectID.indexOf(qrcode.subject[0]._id) !== -1;
+    //     })
 
-        let result = qrcodesFiltered.filter(qrcode => {
-            return subjectIDs.indexOf(qrcode._id) === -1;
-        })
-        return result;
-    }
+    //     let result = qrcodesFiltered.filter(qrcode => {
+    //         return subjectIDs.indexOf(qrcode._id) === -1;
+    //     })
+    //     return result;
+    // }
 
-    const subjectsNotAttendance = filterQRCode();
+    // const subjectsNotAttendance = filterQRCode();
 
     return (
         <>
@@ -33,7 +33,7 @@ const NotAttendanced = ({ qrcodes, subjects, navigation }) => {
                         color="#000"
                     />
                 }
-                {
+                {/* {
                     subjectsNotAttendance ?
                         subjectsNotAttendance.map(subject => (
                             <View
@@ -74,7 +74,7 @@ const NotAttendanced = ({ qrcodes, subjects, navigation }) => {
                         ))
                         :
                         <Text>Bạn chưa có lịch sử vắng</Text>
-                }
+                } */}
             </ScrollView>
         </>
     )

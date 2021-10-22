@@ -17,9 +17,9 @@ const historyApi = {
         const url = `/history/user/${id}/attendanced`;
         return axiosClient.get(url, {id});
     },
-    getDetail: (idUser, idSubject) => {
-        const url = `/history/detail?userID=${idUser}&subjectID=${idSubject}`;
-        return axiosClient.get(url, {idUser, idSubject});
+    getDetail: (body) => {
+        const url = `/history/detail`;
+        return axiosClient.post(url, body);
     },
     createOne: (body) => {
         const url = '/history/create';

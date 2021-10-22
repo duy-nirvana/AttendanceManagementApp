@@ -16,7 +16,7 @@ const Attendanced = ({ subjects }) => {
                     color="#000"
                 />
             }
-            {
+            {/* {
                 subjects ?
                     subjects.map(subject => (
                         <View
@@ -47,7 +47,7 @@ const Attendanced = ({ subjects }) => {
                     ))
                     :
                     <Text>Bạn chưa có lịch sử điểm danh</Text>
-            }
+            } */}
         </ScrollView>
     )
 };

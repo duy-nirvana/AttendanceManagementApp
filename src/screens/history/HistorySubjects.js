@@ -6,12 +6,14 @@ import { ActivityIndicator, TextInput } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import slugify from 'slugify';
 import historyApi from '../../api/historyApi';
+import qrcodeApi from '../../api/qrcodeApi';
 
 const fullWidth = Dimensions.get("screen").width;
 
 const HistorySubjects = (props) => {
     const { handleOpenHistory, navigation } = props;
     const profileUser = useSelector(state => state.profile.profile);
+    const classroomId = profileUser?.classroom?._id;
     const [subjectsInfo, setSubjectsInfo] = useState([]);
     const [isLoading, setLoading] = useState(false);
     const [searchInput, setSearchInput] = useState('');
@@ -20,42 +22,39 @@ const HistorySubjects = (props) => {
         const fetchSubjects = async () => {
             setLoading(true);
             try {
-                const res = await historyApi.getSubjects(profileUser._id);
-                if (res) {
-                    setSubjectsInfo(res[0].subjects);
-                }
+                const res = await qrcodeApi.getSubjects(classroomId);
+                setSubjectsInfo(res);
                 setLoading(false);
             } catch (e) {
                 setLoading(false)
                 console.log('can not get subjects: ', e);
             }
-
         }
 
         fetchSubjects();
     }, [])
 
-    const filterSubjects = (subjects) => {
-        const removeMarkSearchString = slugify(searchInput, {
-            replacement: ' ',
-            remove: undefined,
-            lower: true,
-            strict: false,
-            locale: 'vi'
-        })
+    // const filterSubjects = (subjects) => {
+    //     const removeMarkSearchString = slugify(searchInput, {
+    //         replacement: ' ',
+    //         remove: undefined,
+    //         lower: true,
+    //         strict: false,
+    //         locale: 'vi'
+    //     })
 
-        return subjects && subjects.filter((subject) => {
-            return slugify(subject.name, {
-                replacement: ' ',
-                remove: undefined,
-                lower: true,
-                strict: false,
-                locale: 'vi'
-            }).includes(removeMarkSearchString)
-        })
-    }
+    //     return subjects && subjects.filter((subject) => {
+    //         return slugify(subject.name, {
+    //             replacement: ' ',
+    //             remove: undefined,
+    //             lower: true,
+    //             strict: false,
+    //             locale: 'vi'
+    //         }).includes(removeMarkSearchString)
+    //     })
+    // }
 
-    const renderSubjects = filterSubjects && filterSubjects(subjectsInfo);
+    // const renderSubjects = filterSubjects && filterSubjects(subjectsInfo);
 
     return (
         <View>
@@ -80,9 +79,9 @@ const HistorySubjects = (props) => {
                 }
                 {
                     subjectsInfo.length !== 0 ?
-                        renderSubjects.map(subject => (
+                        subjectsInfo.map(item => (
                             <View
-                                key={subject._id}
+                                key={item.subject._id}
                                 style={{ padding: 10 }}
                             >
                                 <View
@@ -91,11 +90,16 @@ const HistorySubjects = (props) => {
                                     <TouchableOpacity
                                         style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}
                                         onPress={() => navigation.navigate('SubjectDetail', {
-                                            subjectID: subject._id
+                                            subjectID: item.subject._id,
+                                            classroomID: classroomId,
+                                            userID: profileUser._id,
+                                            subjectName: item.subject.name,
+                                            total: item.subject.total,
+                                            teacher: item.owner.fullName
                                         })}
                                     >
                                         <Text h4 style={{ color: "white" }}>
-                                            {subject.name}
+                                            {item.subject.name}
                                         </Text>
                                     </TouchableOpacity>
                                 </View>

@@ -27,15 +27,26 @@ const renderTabBar = props => (
 );
 
 const SubjectDetail = ({ route: { params }, navigation }) => {
-    const { subjectID } = params;
+    const { 
+        subjectID,
+        subjectName,
+        userID,
+        classroomID,
+        teacher,
+        total
+     } = params;
     const profileUser = useSelector(state => state.profile.profile);
     const [subjectDetail, setSubjectDetail] = useState([]);
     const [isLoading, setLoading] = useState(false);
     const [searchInput, setSearchInput] = useState('');
     const [QRCodeByClass, setQRCodeByClass] = useState([]);
     const headerHeight = useHeaderHeight();
+    const userInfo = {
+        subject: subjectID,
+        classes: classroomID,
+        user: userID
+    }
 
-    // EX
     const layout = useWindowDimensions();
 
     const [index, setIndex] = useState(0);
@@ -43,11 +54,6 @@ const SubjectDetail = ({ route: { params }, navigation }) => {
         { key: 'first', title: 'Đã điểm danh' },
         { key: 'second', title: 'Chưa điểm danh' },
     ]);
-
-    // const renderScene = SceneMap({
-    //     first: Attendanced,
-    //     second: NotAttendanced,
-    // });
 
     const renderScene = ({ route }) => {
         switch (route.key) {
@@ -59,21 +65,18 @@ const SubjectDetail = ({ route: { params }, navigation }) => {
                 return null;
         }
     }
-    // -----------
 
     useEffect(() => {
         const fetchDetailSubject = async () => {
             setLoading(true);
-            historyApi.getDetail(profileUser._id, subjectID)
-                .then(res => {
-                    setSubjectDetail(res);
-                    setLoading(false);
-                })
+            const res = await historyApi.getDetail(userInfo)
+            setSubjectDetail(res);
+            setLoading(false);
 
-            qrcodeApi.getByClassId(profileUser.classroom._id)
-                .then(res => {
-                    setQRCodeByClass(res);
-                })
+            // qrcodeApi.getByClassId(profileUser.classroom._id)
+            //     .then(res => {
+            //         setQRCodeByClass(res);
+            //     })
         }
 
         fetchDetailSubject();
@@ -105,17 +108,17 @@ const SubjectDetail = ({ route: { params }, navigation }) => {
             <View style={[styles.box_shadow, styles.blueBg, { borderBottomRightRadius: 0, borderBottomLeftRadius: 0 }]} >
                 <View style={{ backgroundColor: '#235789', textAlign: 'center', padding: 10, alignSelf: 'center', borderRadius: 10}}>
                     <Text h4 style={{ color: "white" }}>
-                        {subjectDetail[0]?.qrcode.subject.name}
+                        {subjectName}
                     </Text>
                 </View>
                 <Text h4 style={{ color: "white", lineHeight: 40 }}>
-                    Giảng viên: {subjectDetail[0]?.qrcode.user[0].fullName}
+                    Giảng viên: {teacher}
                 </Text>
                 <Text h4 style={{ color: "white", lineHeight: 40 }}>
-                    {`Đã điểm danh: ${subjectDetail.length} / ${subjectDetail[0]?.qrcode.subject.total ? subjectDetail[0]?.qrcode.subject.total : 0} buổi`}
+                    {`Đã điểm danh: ${subjectDetail?.attendanceSubjects?.length} / ${total} buổi`}
                 </Text>
                 <Text h4 style={{ color: "white", lineHeight: 40 }}>
-                    {`Vắng: ${missingDays} buổi`}
+                    {`Vắng: ${subjectDetail?.notAttendanceSubjects?.length} buổi`}
                 </Text>
             </View>
             <TabView

@@ -13,6 +13,10 @@ const qrcodeApi = {
         const url = `/qrcode/class/${id}`;
         return axiosClient.get(url, {id});
     },
+    getSubjects: (id) => {
+        const url = `/qrcode/class/${id}/subjects`;
+        return axiosClient.get(url, {id})
+    },
     createOne: (body) => {
         const url = '/qrcode/create';
         return axiosClient.post(url, body);
