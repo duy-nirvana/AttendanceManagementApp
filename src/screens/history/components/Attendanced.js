@@ -16,19 +16,22 @@ const Attendanced = ({ subjects }) => {
                     color="#000"
                 />
             }
-            {/* {
+            {
                 subjects ?
                     subjects.map(subject => (
                         <View
                             key={subject._id}
-                            style={{ padding: 10 }}
+                            style={{ 
+                                marginTop: 5,
+                                padding: 20,
+                            }}
                         >
                             <View style={{ flexWrap: 'wrap', flexDirection: "row", marginBottom: 5 }}>
                                 {
-                                    subject.qrcode.classes.map(classes => (
+                                    subject.classes.map(classes => (
                                         <Chip
                                             key={classes._id}
-                                            style={{ backgroundColor: '#235789', marginRight: 5, marginTop: 5 }}
+                                            style={{ backgroundColor: '#555', marginRight: 5, marginTop: 5 }}
                                         >
                                             <Subheading style={{ color: '#fff' }}>{classes.name}</Subheading>
                                         </Chip>
@@ -36,8 +39,8 @@ const Attendanced = ({ subjects }) => {
                                 }
                             </View>
                             {
-                                subject.qrcode.description ?
-                                    <Subheading>Chú thích: {subject.qrcode.description}</Subheading>
+                                subject.description ?
+                                    <Subheading>Chú thích: {subject.description}</Subheading>
                                     : null
                             }
                             <Subheading>Thời gian: {moment(subject.createdAt).tz('Asia/Ho_Chi_Minh').format('HH:mm:ss, dddd DD/MM/YYYY')}</Subheading>
@@ -47,7 +50,7 @@ const Attendanced = ({ subjects }) => {
                     ))
                     :
                     <Text>Bạn chưa có lịch sử điểm danh</Text>
-            } */}
+            }
         </ScrollView>
     )
 };

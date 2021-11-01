@@ -5,7 +5,7 @@ import { ScrollView, View, Modal } from 'react-native';
 import { Text, Icon } from 'react-native-elements';
 import { ActivityIndicator, Chip, Divider, Subheading, } from 'react-native-paper';
 
-const NotAttendanced = ({ qrcodes, subjects, navigation }) => {
+const NotAttendanced = ({ subjects }) => {
     const [isLoading, setLoading] = useState(false);
 
     // const filterQRCode = () => {
@@ -33,32 +33,44 @@ const NotAttendanced = ({ qrcodes, subjects, navigation }) => {
                         color="#000"
                     />
                 }
-                {/* {
-                    subjectsNotAttendance ?
-                        subjectsNotAttendance.map(subject => (
+                {
+                    subjects ? subjects.map(subject => (
                             <View
                                 key={subject._id}
-                                style={{ padding: 10 }}
+                                style={{ marginTop: 5 }}
                             >
-                                <View style={{ flexWrap: 'wrap', flexDirection: "row", marginBottom: 5 }}>
-                                    {
-                                        subject.classes.map(classes => (
-                                            <Chip
-                                                key={classes._id}
-                                                style={{ backgroundColor: '#235789', marginRight: 5, marginTop: 5 }}
-                                            >
-                                                <Subheading style={{ color: '#fff' }}>{classes.name}</Subheading>
-                                            </Chip>
-                                        ))
-                                    }
-                                </View>
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Subheading>Thời gian: {moment(subject.createdAt).tz('Asia/Ho_Chi_Minh').format('HH:mm:ss, dddd DD/MM/YYYY')}</Subheading>
+                                <View 
+                                    style={{ 
+                                        flexDirection: 'row', 
+                                        alignItems: 'center', 
+                                        padding: 20,
+                                        backgroundColor: subject.isOutOfDate ? '#75F57B' : '#f3425f'
+                                    }}
+                                >   
+                                    <View>
+                                        {
+                                            subject.classes.map(classes => (
+                                                <Chip
+                                                    key={classes._id}
+                                                    style={{ 
+                                                        backgroundColor: '#555',
+                                                        width: 100
+                                                    }}
+                                                >
+                                                    <Subheading style={{ color: '#fff' }}>
+                                                        {classes.name}
+                                                    </Subheading>
+                                                </Chip>
+                                            ))
+                                        }
+                                        <Subheading style={{flex: 1, flexWrap: 'wrap', color: 'white'}}>Thời gian: {moment(subject.createdAt).tz('Asia/Ho_Chi_Minh').format('HH:mm:ss, dddd DD/MM/YYYY')}</Subheading>
+                                    </View>
                                     <Icon
                                         name='qrcode'
                                         type='material-community'
-                                        size={30}
-                                        style={{ alignSelf: 'flex-end', backgroundColor: '#555', borderRadius: 50, padding: 10 }}
+                                        size={35}
+                                        color='white'
+                                        style={{ alignSelf: 'flex-end', backgroundColor: '#555', borderRadius: 50, padding: 20 }}
                                         onPress={() => navigation.navigate("QRCodeDetail", {
                                             subjectName: subject.subject[0].name,
                                             qrcode: subject,
@@ -74,7 +86,7 @@ const NotAttendanced = ({ qrcodes, subjects, navigation }) => {
                         ))
                         :
                         <Text>Bạn chưa có lịch sử vắng</Text>
-                } */}
+                }
             </ScrollView>
         </>
     )

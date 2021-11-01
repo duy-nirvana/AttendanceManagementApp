@@ -22,7 +22,7 @@ const renderTabBar = props => (
         {...props}
         indicatorStyle={{ backgroundColor: 'navy', height: 5 }}
         style={[styles.blueBg]}
-        labelStyle={{ color: "red" }}
+        labelStyle={{ color: "white" }}
     />
 );
 
@@ -58,9 +58,9 @@ const SubjectDetail = ({ route: { params }, navigation }) => {
     const renderScene = ({ route }) => {
         switch (route.key) {
             case 'first':
-                return <Attendanced subjects={subjectDetail} />;
+                return <Attendanced subjects={subjectDetail.attendanceSubjects} />;
             case 'second':
-                return <NotAttendanced qrcodes={QRCodeByClass} subjects={subjectDetail} navigation={navigation}/>;
+                return <NotAttendanced subjects={subjectDetail.notAttendanceSubjects} />;
             default:
                 return null;
         }
@@ -82,23 +82,23 @@ const SubjectDetail = ({ route: { params }, navigation }) => {
         fetchDetailSubject();
     }, [])
 
-    const countTotalQRCode = (id) => {
-        let count = 0;
-        QRCodeByClass.filter(qrcode => {
-            if (qrcode?.subject[0]._id === id) {
-                count++;
-            }
-        })
+    // const countTotalQRCode = (id) => {
+    //     let count = 0;
+    //     QRCodeByClass.filter(qrcode => {
+    //         if (qrcode?.subject[0]._id === id) {
+    //             count++;
+    //         }
+    //     })
 
-        return count;
-    }
-    const filterQRCode = (id) => {
-        return QRCodeByClass.filter(qrcode => {
-            return qrcode?.subject[0] === id;
-        })
-    }
+    //     return count;
+    // }
+    // const filterQRCode = (id) => {
+    //     return QRCodeByClass.filter(qrcode => {
+    //         return qrcode?.subject[0] === id;
+    //     })
+    // }
 
-    const missingDays = countTotalQRCode(subjectID) - subjectDetail.length;
+    // const missingDays = countTotalQRCode(subjectID) - subjectDetail.length;
 
     return (
         <View
@@ -115,10 +115,16 @@ const SubjectDetail = ({ route: { params }, navigation }) => {
                     Giảng viên: {teacher}
                 </Text>
                 <Text h4 style={{ color: "white", lineHeight: 40 }}>
-                    {`Đã điểm danh: ${subjectDetail?.attendanceSubjects?.length} / ${total} buổi`}
+                    {`Đã điểm danh: ${subjectDetail?.attendanceSubjects ? 
+                                        subjectDetail.attendanceSubjects.length
+                                        :
+                                        '-' } / ${total} buổi`}
                 </Text>
                 <Text h4 style={{ color: "white", lineHeight: 40 }}>
-                    {`Vắng: ${subjectDetail?.notAttendanceSubjects?.length} buổi`}
+                    {`Vắng: ${subjectDetail?.notAttendanceSubjects?
+                        subjectDetail.notAttendanceSubjects.length 
+                        :
+                        '-'} buổi`}
                 </Text>
             </View>
             <TabView
