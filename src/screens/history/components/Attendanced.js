@@ -23,7 +23,7 @@ const Attendanced = ({ subjects }) => {
                             key={subject._id}
                             style={{ 
                                 marginTop: 5,
-                                padding: 20,
+                                padding: 8,
                             }}
                         >
                             <View style={{ flexWrap: 'wrap', flexDirection: "row", marginBottom: 5 }}>
@@ -43,7 +43,7 @@ const Attendanced = ({ subjects }) => {
                                     <Subheading>Chú thích: {subject.description}</Subheading>
                                     : null
                             }
-                            <Subheading>Thời gian: {moment(subject.createdAt).tz('Asia/Ho_Chi_Minh').format('HH:mm:ss, dddd DD/MM/YYYY')}</Subheading>
+                            <Subheading>{moment(subject.createdAt).tz('Asia/Ho_Chi_Minh').format('HH:mm:ss, dddd DD/MM/YYYY')}</Subheading>
                             <Divider style={{ marginTop: 15 }} />
                         </View>
 

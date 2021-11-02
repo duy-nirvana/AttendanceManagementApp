@@ -43,11 +43,15 @@ const QRCodeDetail = ({ route: { params }, navigation }) => {
                 value={qrcode._id}
             />
             <Button
-                // disabled={isLoading ? true : false}
+                disabled={qrcode.isOutOfDate ? true : false}
                 mode="outlined"
                 color="white"
                 loading={isLoading}
-                style={[{ padding: 20, marginTop: 10 }, styles.redBg]}
+                style={{ 
+                    padding: 20, 
+                    marginTop: 10,
+                    backgroundColor: qrcode.isOutOfDate ? '#f3425f' : '#45bd63'
+                }}
                 onPress={handleScanQRCode}
             >
                 Điểm danh

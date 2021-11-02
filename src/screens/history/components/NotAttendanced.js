@@ -1,12 +1,14 @@
 import moment from 'moment-timezone';
 import 'moment/locale/vi';
-import React, { useEffect, useState } from 'react';
-import { ScrollView, View, Modal } from 'react-native';
-import { Text, Icon } from 'react-native-elements';
-import { ActivityIndicator, Chip, Divider, Subheading, } from 'react-native-paper';
+import React, { useState } from 'react';
+import { ScrollView, View } from 'react-native';
+import { Icon, Text, Badge } from 'react-native-elements';
+import { ActivityIndicator, Chip, Divider, Subheading } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 
 const NotAttendanced = ({ subjects }) => {
     const [isLoading, setLoading] = useState(false);
+    const navigation = useNavigation();
 
     // const filterQRCode = () => {
     //     const qrcodeSubjectID = subjects.map((sub) => sub.qrcode.subject._id);
@@ -35,55 +37,56 @@ const NotAttendanced = ({ subjects }) => {
                 }
                 {
                     subjects ? subjects.map(subject => (
-                            <View
-                                key={subject._id}
-                                style={{ marginTop: 5 }}
-                            >
-                                <View 
-                                    style={{ 
-                                        flexDirection: 'row', 
-                                        alignItems: 'center', 
-                                        padding: 20,
-                                        backgroundColor: subject.isOutOfDate ? '#75F57B' : '#f3425f'
-                                    }}
-                                >   
-                                    <View>
-                                        {
-                                            subject.classes.map(classes => (
-                                                <Chip
-                                                    key={classes._id}
-                                                    style={{ 
-                                                        backgroundColor: '#555',
-                                                        width: 100
-                                                    }}
-                                                >
-                                                    <Subheading style={{ color: '#fff' }}>
-                                                        {classes.name}
-                                                    </Subheading>
-                                                </Chip>
-                                            ))
-                                        }
-                                        <Subheading style={{flex: 1, flexWrap: 'wrap', color: 'white'}}>Thời gian: {moment(subject.createdAt).tz('Asia/Ho_Chi_Minh').format('HH:mm:ss, dddd DD/MM/YYYY')}</Subheading>
-                                    </View>
-                                    <Icon
-                                        name='qrcode'
-                                        type='material-community'
-                                        size={35}
-                                        color='white'
-                                        style={{ alignSelf: 'flex-end', backgroundColor: '#555', borderRadius: 50, padding: 20 }}
-                                        onPress={() => navigation.navigate("QRCodeDetail", {
-                                            subjectName: subject.subject[0].name,
-                                            qrcode: subject,
-                                            createdAt: subject.createdAt
-                                        })}
-                                    />
-                                </View>
-                                <Divider style={{ marginTop: 15 }} />
+                        <View
+                            key={subject._id}
+                            style={{
+                                marginTop: 5,
+                                padding: 8
+                            }}
+                        >
 
-
+                            <View style={{ flexWrap: 'wrap', flexDirection: "row", marginBottom: 5 }}>
+                                {
+                                    subject.classes.map(classes => (
+                                        <Chip
+                                            key={classes._id}
+                                            style={{
+                                                backgroundColor: '#555',
+                                                marginRight: 5,
+                                            }}
+                                        >
+                                            <Subheading style={{ color: '#fff' }}>
+                                                {classes.name}
+                                            </Subheading>
+                                        </Chip>
+                                    ))
+                                }
+                            </View>
+                            <View style={{ alignItems: 'center', flexWrap: 'wrap', flexDirection: "row" }}>
+                                <Subheading style={{ flex: 1, flexWrap: 'wrap' }}>{moment(subject.createdAt).tz('Asia/Ho_Chi_Minh').format('HH:mm:ss, dddd DD/MM/YYYY')}</Subheading>
+                                <Badge 
+                                    status={subject.isOutOfDate ? 'error' : 'success'} 
+                                    badgeStyle={{marginRight: 5}}
+                                />
+                                <Icon
+                                    name='qrcode'
+                                    type='material-community'
+                                    size={35}
+                                    style={{ alignSelf: 'flex-end', backgroundColor: '#555', borderRadius: 50, padding: 20 }}
+                                    onPress={() => navigation.navigate("QRCodeDetail", {
+                                        subjectName: subject.name,
+                                        qrcode: subject,
+                                        createdAt: subject.createdAt
+                                    })}
+                                />
                             </View>
 
-                        ))
+                            <Divider style={{ marginTop: 15 }} />
+
+
+                        </View>
+
+                    ))
                         :
                         <Text>Bạn chưa có lịch sử vắng</Text>
                 }
