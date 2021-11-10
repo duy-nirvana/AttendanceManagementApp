@@ -53,6 +53,7 @@ const NotAttendanced = ({ subjects }) => {
                                             style={{
                                                 backgroundColor: '#555',
                                                 marginRight: 5,
+                                                marginBottom: 5
                                             }}
                                         >
                                             <Subheading style={{ color: '#fff' }}>

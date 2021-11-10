@@ -25,7 +25,7 @@ const QRCodeGenerate = (props) => {
     const [selectedClasses, setSelectedClasses] = useState([]);
     const [selectedSubject, setSelectedSubject] = useState([]);
     const [selectedTime, setSelectedTime] = useState(30000);
-    const [infoQRCode, setInfoQRCode] = useState('');
+    const [infoQRCode, setInfoQRCode] = useState(null);
     const [descriptionQRCode, setDescriptionQRCode] = useState('');
     const [isLoading, setLoading] = useState(false);
 
@@ -142,15 +142,16 @@ const QRCodeGenerate = (props) => {
             setLoading(true);
             qrcodeApi.createOne(stringQRCode)
             .then((data) => {
+                console.log("DATA " + JSON.stringify(data))
                 setLoading(false);
-                setInfoQRCode(data._id);
+                setInfoQRCode(data.qrcode._id);
                 setSettingQRCode(true);
-                qrcodeApi.updateById(data._id);
+                qrcodeApi.updateById(data.qrcode._id);
                 subjectApi.getById(selectedSubject).then((sub) => {
                     qrcodeApi.sendMail({
                         subject: sub.name,
                         mail: profileUser.email,
-                        qrcode: data._id
+                        qrcode: data.qrcode._id
                     })
                     .then(() => {
                         Toast.show(`Mã QR đã được gửi tới email của bạn`, Toast.LONG);
@@ -162,6 +163,8 @@ const QRCodeGenerate = (props) => {
             console.log('fail to post qrcode info', );
         }
     }
+
+    console.log({stringQRCode});
 
     return (
         <ScrollView style={{flex: 1}}>

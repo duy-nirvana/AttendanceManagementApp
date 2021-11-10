@@ -31,7 +31,7 @@ const Attendanced = ({ subjects }) => {
                                     subject.classes.map(classes => (
                                         <Chip
                                             key={classes._id}
-                                            style={{ backgroundColor: '#555', marginRight: 5, marginTop: 5 }}
+                                            style={{ backgroundColor: '#555', marginRight: 5, marginTop: 5, marginBottom: 5 }}
                                         >
                                             <Subheading style={{ color: '#fff' }}>{classes.name}</Subheading>
                                         </Chip>
