@@ -38,34 +38,38 @@ const ClassroomNotAttendanced = ({ users }) => {
     //     filterNotAttendanceUsers();
     // }, [usersAttendance])
 
-//     const renderItem = ({ item }) => {
+//     const renderItem = ({ user }) => {
 
         return (
             <View>
                 {users.map(user => ((
-                    <Text>{user.fullName}</Text>
+                    // <Text>{user.fullName}</Text>
+
+                    <View
+                style={{ padding: 10 }}
+            >
+                <Text h4>{user.fullName}</Text>
+                <Text>MSSV: {user.codeNumber}</Text>
+
+
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text>Lớp </Text>
+                    <Chip
+                        key={user._id}
+                        style={[styles.orangeBg, { marginRight: 5, marginTop: 5 }]}
+                    >
+                        <Subheading style={{ color: '#fff' }}>{user.classroom.name}</Subheading>
+                    </Chip>
+                </View>
+
+            </View>
                 )))}
+                
             </View>
         )
+
 //         return (
-//             <View
-//                 style={{ padding: 10 }}
-//             >
-//                 <Text h4>{item.fullName}</Text>
-//                 <Text>MSSV: {item.codeNumber}</Text>
-
-
-//                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-//                     <Text>Lớp </Text>
-//                     <Chip
-//                         key={item._id}
-//                         style={[styles.orangeBg, { marginRight: 5, marginTop: 5 }]}
-//                     >
-//                         <Subheading style={{ color: '#fff' }}>{item.classroom.name}</Subheading>
-//                     </Chip>
-//                 </View>
-
-//             </View>
+            
 //         );
 //     };
 

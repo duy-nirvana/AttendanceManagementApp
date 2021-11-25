@@ -22,7 +22,7 @@ const HistoryAttendance = (props) => {
     useEffect(() => {
         const fetchHistory = async () => {
             setLoading(true);
-            await historyApi.getUser(profileUser._id)
+            await qrcodeApi.getByUserId(profileUser._id)
             .then(res => {
                 setHistoryInfo(res);
                 setLoading(false);
@@ -37,6 +37,7 @@ const HistoryAttendance = (props) => {
         fetchHistory();
     }, [])
 
+    console.log(historyInfo)
     const filterSubjects = (histories) => {
         const removeMarkSearchString = slugify(searchInput, {
             replacement: ' ',
@@ -47,7 +48,7 @@ const HistoryAttendance = (props) => {
         })
 
         return histories && histories.filter((history) => {
-            return slugify(history.qrcode.subject[0].name, {
+            return slugify(history.subject[0].name, {
                 replacement: ' ',
                 remove: undefined,
                 lower: true,
@@ -59,27 +60,16 @@ const HistoryAttendance = (props) => {
 
     const renderHistory = filterSubjects(historyInfo);
 
-    const countTotalCurrent = (id) => {
-        let count = 0;
-        historyInfo.filter(history => {
-            if (history?.qrcode.subject[0]?._id === id) {
-                count++;
-            }
-        })
+    // const countTotalCurrent = (id) => {
+    //     let count = 0;
+    //     historyInfo.filter(history => {
+    //         if (history?.qrcode.subject[0]?._id === id) {
+    //             count++;
+    //         }
+    //     })
 
-        return count;
-    }
-
-    const countTotalQRCode = (id) => {
-        let count = 0;
-        QRCodeByClass.filter(qrcode => {
-            if (qrcode?.subject[0]._id === id) {
-                count++;
-            }
-        })
-
-        return count;
-    }
+    //     return count;
+    // }
 
     return (
         <View>
@@ -111,7 +101,7 @@ const HistoryAttendance = (props) => {
                                 style={{ padding: 10}}
                             >
                                 {
-                                    history.qrcode.subject.map(subject => (
+                                    history.subject.map(subject => (
                                         <Title
                                             key={subject._id}
                                             style={{marginBottom: 5}}
@@ -122,7 +112,7 @@ const HistoryAttendance = (props) => {
                                 }
                                 <View style={{flexWrap: 'wrap', flexDirection: "row", marginBottom: 5}}>
                                     {
-                                        history.qrcode.classes.map(classes => (
+                                        history.classes.map(classes => (
                                             <Chip
                                                 key={classes._id}
                                                 style={{backgroundColor: '#235789', marginRight: 5, marginTop: 5}}
@@ -132,11 +122,11 @@ const HistoryAttendance = (props) => {
                                         ))
                                     }
                                 </View>
-                                <Subheading>Đã điểm danh: {countTotalCurrent(history.qrcode.subject[0]._id)} / {history.qrcode.subject[0].total} buổi</Subheading>
-                                <Subheading>{`Vắng: ${countTotalQRCode(history.qrcode.subject[0]._id) - countTotalCurrent(history.qrcode.subject[0]._id)} buổi`}</Subheading>
+                                {/* <Subheading>Đã điểm danh: {countTotalCurrent(history.subject[0]._id)} / {history.subject[0].total} buổi</Subheading>
+                                <Subheading>{`Vắng: ${countTotalQRCode(history.subject[0]._id) - countTotalCurrent(history.subject[0]._id)} buổi`}</Subheading> */}
                                 {
-                                    history.qrcode.description ?
-                                    <Subheading>Chú thích: {history.qrcode.description}</Subheading>
+                                    history.description ?
+                                    <Subheading>Chú thích: {history.description}</Subheading>
                                     : null
                                 }
                                 <Subheading>Thời gian: {moment(history.createdAt).tz('Asia/Ho_Chi_Minh').format('HH:mm:ss, dddd DD/MM/YYYY')}</Subheading>

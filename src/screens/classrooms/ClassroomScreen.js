@@ -55,8 +55,8 @@ const ClassroomScreen = (props) => {
                             </Title>
                         ))
                     }
-                    <Text>khong diem danh: {item.not_attendance_user.length}</Text>
-                    <Text>da diem danh: {item.attendance_user.length}</Text>
+                    {/* <Text>khong diem danh: {item.not_attendance_user.length}</Text>
+                    <Text>da diem danh: {item.attendance_user.length}</Text> */}
                     <View style={{ flexWrap: 'wrap', flexDirection: "row", marginBottom: 15 }}>
                         {
                             item.classes.map(classes => (

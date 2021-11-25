@@ -142,7 +142,6 @@ const QRCodeGenerate = (props) => {
             setLoading(true);
             qrcodeApi.createOne(stringQRCode)
             .then((data) => {
-                console.log("DATA " + JSON.stringify(data))
                 setLoading(false);
                 setInfoQRCode(data.qrcode._id);
                 setSettingQRCode(true);
