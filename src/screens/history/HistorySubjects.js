@@ -58,7 +58,7 @@ const HistorySubjects = (props) => {
 
     return (
         <View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10 }} >
+            {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10 }} >
                 <TextInput
                     placeholder="Tìm môn học"
                     mode="outlined"
@@ -67,7 +67,7 @@ const HistorySubjects = (props) => {
                     style={{ width: '100%', backgroundColor: 'transparent' }}
                     onChangeText={(value) => setSearchInput(value)}
                 />
-            </View>
+            </View> */}
             <ScrollView
                 style={{ marginBottom: 80 }}
             >

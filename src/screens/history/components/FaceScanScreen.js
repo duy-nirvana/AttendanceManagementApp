@@ -13,7 +13,7 @@ let image1 = new FaceImage();
 let image2 = new FaceImage();
 
 const FaceScanScreen = ({ route: { params }, navigation }) => {
-    const { qrcode, user } = params;
+    const { qrcode, owner } = params;
     const base64ImageAvatar = useSelector(state => state.face);
     const isCamera = useRef(null);
     const [isLoading, setLoading] = useState(false);
@@ -49,7 +49,7 @@ const FaceScanScreen = ({ route: { params }, navigation }) => {
                 setLoading(false)
                 historyApi.createOne({
                     qrcode,
-                    user,
+                    owner,
                 }).then(() => {
                     Alert.alert(
                         "",

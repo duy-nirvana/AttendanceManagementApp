@@ -1,6 +1,6 @@
 import 'moment/locale/vi';
 import React, { useEffect, useState } from 'react';
-import { FlatList, SafeAreaView, StyleSheet, View } from 'react-native';
+import { FlatList, SafeAreaView, StyleSheet, View, ScrollView } from 'react-native';
 import { Text } from 'react-native-elements';
 import { ActivityIndicator, Chip, Subheading } from 'react-native-paper';
 import userApi from '../../../api/userApi';
@@ -41,31 +41,33 @@ const ClassroomNotAttendanced = ({ users }) => {
 //     const renderItem = ({ user }) => {
 
         return (
-            <View>
-                {users.map(user => ((
+            <ScrollView>
+                {users.map((user, index) => ((
                     // <Text>{user.fullName}</Text>
 
                     <View
                 style={{ padding: 10 }}
             >
-                <Text h4>{user.fullName}</Text>
-                <Text>MSSV: {user.codeNumber}</Text>
+                <View key={index}>
+                    <Text h4>{user.fullName}</Text>
+                    <Text>MSSV: {user.codeNumber}</Text>
 
 
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text>Lớp </Text>
-                    <Chip
-                        key={user._id}
-                        style={[styles.orangeBg, { marginRight: 5, marginTop: 5 }]}
-                    >
-                        <Subheading style={{ color: '#fff' }}>{user.classroom.name}</Subheading>
-                    </Chip>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Text>Lớp </Text>
+                        <Chip
+                            key={user._id}
+                            style={[styles.orangeBg, { marginRight: 5, marginTop: 5 }]}
+                        >
+                            <Subheading style={{ color: '#fff' }}>{user.classroom.name}</Subheading>
+                        </Chip>
+                    </View>
                 </View>
 
             </View>
                 )))}
                 
-            </View>
+            </ScrollView>
         )
 
 //         return (

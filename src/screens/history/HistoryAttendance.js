@@ -37,7 +37,6 @@ const HistoryAttendance = (props) => {
         fetchHistory();
     }, [])
 
-    console.log(historyInfo)
     const filterSubjects = (histories) => {
         const removeMarkSearchString = slugify(searchInput, {
             replacement: ' ',

@@ -7,6 +7,7 @@ import Face, { Enum, MatchFacesResponse, MatchFacesRequest, Image as FaceImage }
 import * as RNFS from 'react-native-fs';
 import Toast from 'react-native-simple-toast';
 import { CircleMask, RestangleMask } from './components/Mask';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import qrcodeApi from '../../api/qrcodeApi';
 import historyApi from '../../api/historyApi';
@@ -26,14 +27,19 @@ const ScanScreen = () => {
     const [hasScanned, setScanned] = useState(false);
     const [isLoading, setLoading] = useState(false);
     const [sessionData, setSessionData] = useState(undefined);
-    const [isFaceScan, setFaceScan] = useState(false);
+    const [isFaceScan, setFaceScan] = useState(true);
     const [text, setText] = useState('nothing')
+    
+    const [cameraPosition, setCameraPosition] = useState(true);
 
     useEffect(() => {
         image1.bitmap = base64ImageAvatar.base64Avatar;
         image1.imageType = Enum.eInputFaceType.ift_DocumentPrinted;
     }, [])
 
+    const handleReverseCamera = () => {
+        setCameraPosition(!cameraPosition);
+    }
 
     const handleBarCodeScanned = (e) => {
         if (isLoading) return;
@@ -43,10 +49,11 @@ const ScanScreen = () => {
 
     const takePicture = async () => {
         if (isCamera) {
-            const options = { quality: 1, base64: true, mirrorImage: true, width: 200 };
+            const options = { quality: 1, base64: true, mirrorImage: true, width: 320 };
             const data = await isCamera.current.takePictureAsync(options);
 
             const base64Image = await RNFS.readFile(data.uri, 'base64');
+            // console.log(base64Image)
 
             image2.bitmap = base64Image;
             image2.imageType = Enum.eInputFaceType.ift_DocumentPrinted;
@@ -69,7 +76,8 @@ const ScanScreen = () => {
             if (matchedFaces.length > 0 ) {
                 setLoading(false)
                 // alert(`Nhận diện khuôn mặt thành công!`);
-                setFaceScan(true)
+                setFaceScan(false)
+                setCameraPosition(false);
             } else {
                 setLoading(false)
                 alert(`Nhận diện khuôn mặt thất bại!`);
@@ -178,7 +186,7 @@ const ScanScreen = () => {
                 <RNCamera
                     ref={isCamera}
                     style={[StyleSheet.absoluteFill]}
-                    type={isFaceScan ? RNCamera.Constants.Type.back : RNCamera.Constants.Type.front}
+                    type={(cameraPosition) ? RNCamera.Constants.Type.front : RNCamera.Constants.Type.back}
                     androidCameraPermissionOptions={{
                         title: 'Permission to use camera',
                         message: 'We need your permission to use your camera',
@@ -189,25 +197,28 @@ const ScanScreen = () => {
                     barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
                 >
                     {
-                        !isFaceScan ?
+                        isFaceScan ?
                             <>
                                 <CircleMask />
                                 <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
+                                    <Icon onPress={() => handleReverseCamera()} name="camera-reverse-outline" style={styles.cameraReverse} size={40} color="white" />
                                     <View
                                         style={styles.loading}
                                     >
+
                                         {isLoading ? (
                                             <Button
-                                                disabled
-                                                title="Scan"
-                                                type="clear"
-                                                loading={true}
-                                                loadingProps={{ size: 'large', color: 'white' }}
+                                            disabled
+                                            title="Scan"
+                                            type="clear"
+                                            loading={true}
+                                            loadingProps={{ size: 'large', color: 'white' }}
                                             />
-                                        ) : (
-                                            <View style={{ flex: 1 }}></View>
-                                        )}
+                                            ) : (
+                                                <View style={{ flex: 1 }}></View>
+                                                )}
                                     </View>
+    
                                     <TouchableOpacity onPress={() => takePicture()} style={styles.capture}>
                                         <Text style={{ fontSize: 14 }}>Nhận Diện</Text>
                                     </TouchableOpacity>
@@ -276,6 +287,13 @@ const styles = StyleSheet.create({
         right: 0,
         borderRadius: 5,
         paddingHorizontal: 10,
+    },
+    cameraReverse: {
+        position: 'absolute',
+        bottom: 20,
+        left: 0,
+        borderRadius: 5,
+        paddingHorizontal: 20,
     },
 });
 

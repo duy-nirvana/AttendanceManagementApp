@@ -36,31 +36,34 @@ const ClassroomAttendanced = ({ users }) => {
     //     </View>
     // )
     return (
-        <View>
-            {users.map(user => ((
+        <ScrollView>
+            {users.map((user, index) => ((
                 // <Text>{user.fullName}</Text>
 
                 <View
             style={{ padding: 10 }}
         >
-            <Text h4>{user.fullName}</Text>
-            <Text>MSSV: {user.codeNumber}</Text>
+            <View key={index}>
+                <Text h4>{user.fullName}</Text>
+                <Text>MSSV: {user.codeNumber}</Text>
 
 
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text>Lớp </Text>
-                <Chip
-                    key={user._id}
-                    style={[styles.orangeBg, { marginRight: 5, marginTop: 5 }]}
-                >
-                    <Subheading style={{ color: '#fff' }}>{user.classroom.name}</Subheading>
-                </Chip>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text>Lớp </Text>
+                    <Chip
+                        key={user._id}
+                        style={[styles.orangeBg, { marginRight: 5, marginTop: 5 }]}
+                    >
+                        <Subheading style={{ color: '#fff' }}>{user.classroom.name}</Subheading>
+                    </Chip>
+                </View>
+
             </View>
 
         </View>
             )))}
             
-        </View>
+        </ScrollView>
     )
     // (
         // <ScrollView style={{ flex: 1 }}>

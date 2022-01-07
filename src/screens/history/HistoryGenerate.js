@@ -26,7 +26,7 @@ const HistoryGenerate = (props) => {
     
     const fetchHistory = async () => {
         setLoading(true);
-        await qrcodeApi.getByUserId(profileUser._id)
+        await qrcodeApi.getByTeacherId(profileUser._id)
         .then(res => {
             setHistoryInfo(res);
             setLoading(false);

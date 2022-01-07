@@ -9,6 +9,10 @@ const qrcodeApi = {
         const url = `/qrcode/user/${id}`;
         return axiosClient.get(url, {id});
     },
+    getByTeacherId: (id) => {
+        const url = `/qrcode/teacher/${id}`;
+        return axiosClient.get(url, {id});
+    },
     getByClassId: (id) => {
         const url = `/qrcode/class/${id}`;
         return axiosClient.get(url, {id});

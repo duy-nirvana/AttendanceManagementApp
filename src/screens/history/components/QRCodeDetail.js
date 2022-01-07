@@ -22,7 +22,7 @@ const QRCodeDetail = ({ route: { params }, navigation }) => {
         if (!qrcode.isOutOfDate) {
             navigation.navigate('FaceScanScreen', {
                 qrcode: qrcode._id,
-                user: profileUser._id,
+                owner: profileUser._id,
             });
         } else {
             alert(`Mã QR Code đã hết hạn! `);

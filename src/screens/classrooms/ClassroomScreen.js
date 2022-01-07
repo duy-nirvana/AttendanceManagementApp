@@ -17,11 +17,13 @@ const ClassroomScreen = (props) => {
     const [searchInput, setSearchInput] = useState('');
     const headerHeight = useHeaderHeight();
 
+    console.log('profileUser: ', profileUser);
+
     useEffect(() => {
         const fetchQRCodes = async () => {
             setLoading(true);
             try {
-                const res = await qrcodeApi.getByUserId(profileUser._id);
+                const res = await qrcodeApi.getByTeacherId(profileUser._id);
                 setQRCodes(res);
                 setLoading(false);
             } catch (e) {
