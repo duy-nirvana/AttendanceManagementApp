@@ -49,11 +49,11 @@ const ScanScreen = () => {
 
     const takePicture = async () => {
         if (isCamera) {
-            const options = { quality: 1, base64: true, mirrorImage: true, width: 320 };
+            const options = { quality: 1, base64: true,  width: 400 };
             const data = await isCamera.current.takePictureAsync(options);
 
             const base64Image = await RNFS.readFile(data.uri, 'base64');
-            // console.log(base64Image)
+            console.log(base64Image)
 
             image2.bitmap = base64Image;
             image2.imageType = Enum.eInputFaceType.ift_DocumentPrinted;
@@ -133,7 +133,13 @@ const ScanScreen = () => {
         if (qrcodeInfo) {
             if (qrcodeInfo.isOutOfDate === false) {
                 const checkScanQRCode = async () => {
-                    const compareClass = qrcodeInfo.classes.find(classesID => classesID === userClassID)
+                    const compareClass = await qrcodeInfo?.classes?.find(classesID => {
+                        console.log('class ID:', classesID._id)
+                        return classesID._id === userClassID
+                    })
+                    console.log('QRCOEDE INFOOOO:', qrcodeInfo);
+                    console.log('user class id:', userClassID);
+                    console.log({compareClass});
                     if (!compareClass) {
                         alert(`Mã QR code này không có lớp học của bạn!!!`);
                         setSessionData(undefined);
